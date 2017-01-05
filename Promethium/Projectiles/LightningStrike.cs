@@ -10,30 +10,31 @@ namespace Promethium.Projectiles
         public override void SetDefaults()
         {
             projectile.name = "Lightning Strike";
-            projectile.width = 8;
-            projectile.height = 8;
+            projectile.width = 16;
+            projectile.height = 16;
             projectile.friendly = true;
-            projectile.timeLeft = 16;
-            projectile.alpha = 250;
-            projectile.scale = 0.1F;
-            projectile.aiStyle = 1;
+            projectile.timeLeft = 80;
+            projectile.alpha = 255;
+            projectile.scale = 0.01F;
             projectile.penetrate = 1;
+            projectile.extraUpdates = 20;
             Main.projFrames[projectile.type] = 1;
         }
 
         public override void AI()
         {
-            if (projectile.localAI[0] == 0)
+            if (projectile.ai[0] == 0)
             {
-                projectile.localAI[0] = projectile.position.X;
-                projectile.localAI[1] = projectile.position.Y;
+                if (Main.raining) projectile.damage = projectile.damage * 3 / 2;
+                projectile.ai[0] = projectile.position.X;
+                projectile.ai[1] = projectile.position.Y;
+                projectile.netUpdate = true;
             }
-            base.AI();
         }
 
         public override void Kill(int timeLeft)
         {
-            Vector2 origin = new Vector2(projectile.localAI[0], projectile.localAI[1]);
+            Vector2 origin = new Vector2(projectile.ai[0], projectile.ai[1]);
             Vector2 pos = projectile.Center;
             CreateBolt(origin, pos);
             base.Kill(timeLeft);
@@ -86,19 +87,9 @@ namespace Promethium.Projectiles
 
         private void NewLineAt(Vector2 start, Vector2 end)
         {
-            /*
-                const float ImageThickness = 8;
-                float thicknessScale = Thickness / ImageThickness;
-
-                Vector2 capOrigin = new Vector2(t1.Width, t1.Height / 2f);
-                Vector2 middleOrigin = new Vector2(0, t2.Height / 2f);
-                Vector2 middleScale = new Vector2(tangent.Length(), thicknessScale);
-
-                spriteBatch.Draw(t2, start, null, tint, theta, middleOrigin, middleScale, SpriteEffects.None, 0f);
-            */
             Vector2 tangent = end - start;
             float theta = (float)System.Math.Atan2(tangent.Y, tangent.X);
-            int dust = Dust.NewDust(end, 3, 3, 64);
+            int dust = Dust.NewDust(start, 1, 1, 269, tangent.X / 2, tangent.Y / 2, 0, Color.White, 1.2F);
             Dust d = Main.dust[dust];
             d.rotation = theta;
             d.noGravity = true;

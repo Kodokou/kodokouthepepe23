@@ -2,6 +2,8 @@
 using Terraria.ModLoader;
 using Terraria;
 using Terraria.ID;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace Promethium.Items.Weapons
 {
@@ -22,12 +24,12 @@ namespace Promethium.Items.Weapons
             Item.staff[item.type] = true;
             item.noMelee = true;
             item.knockBack = 2;
-            item.value = 10000;
+            item.value = Item.buyPrice(0, 70);
             item.rare = 8;
             item.UseSound = SoundID.Item20;
             item.autoReuse = true;
             item.shoot = mod.ProjectileType("LightningStrike");
-            item.shootSpeed = 24;
+            item.shootSpeed = 6;
         }
 
         public override DrawAnimation GetAnimation()
