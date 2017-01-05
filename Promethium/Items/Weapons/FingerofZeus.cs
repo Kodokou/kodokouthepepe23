@@ -27,7 +27,7 @@ namespace Promethium.Items.Weapons
             item.UseSound = SoundID.Item20;
             item.autoReuse = true;
             item.shoot = mod.ProjectileType("LightningStrike");
-            item.shootSpeed = 120;
+            item.shootSpeed = 24;
         }
 
         public override DrawAnimation GetAnimation()

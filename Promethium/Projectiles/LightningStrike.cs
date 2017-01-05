@@ -13,13 +13,27 @@ namespace Promethium.Projectiles
             projectile.width = 8;
             projectile.height = 8;
             projectile.friendly = true;
-            projectile.timeLeft = 4;
+            projectile.timeLeft = 16;
+            projectile.alpha = 250;
+            projectile.scale = 0.1F;
+            projectile.aiStyle = 1;
+            projectile.penetrate = 1;
             Main.projFrames[projectile.type] = 1;
+        }
+
+        public override void AI()
+        {
+            if (projectile.localAI[0] == 0)
+            {
+                projectile.localAI[0] = projectile.position.X;
+                projectile.localAI[1] = projectile.position.Y;
+            }
+            base.AI();
         }
 
         public override void Kill(int timeLeft)
         {
-            Vector2 origin = new Vector2(projectile.ai[0], projectile.ai[1]);
+            Vector2 origin = new Vector2(projectile.localAI[0], projectile.localAI[1]);
             Vector2 pos = projectile.Center;
             CreateBolt(origin, pos);
             base.Kill(timeLeft);
@@ -38,7 +52,7 @@ namespace Promethium.Projectiles
 
             positions.Sort();
 
-            const float Sway = 80;
+            const float Sway = 160;
             const float Jaggedness = 1 / Sway;
 
             Vector2 prevPoint = source;
@@ -84,7 +98,7 @@ namespace Promethium.Projectiles
             */
             Vector2 tangent = end - start;
             float theta = (float)System.Math.Atan2(tangent.Y, tangent.X);
-            int dust = Dust.NewDust(start, 2, 2, DustID.WitherLightning);
+            int dust = Dust.NewDust(end, 3, 3, 64);
             Dust d = Main.dust[dust];
             d.rotation = theta;
             d.noGravity = true;
