@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Items\promethiumore.cs" />
+    <Compile Include="Items\PromethiumOre.cs" />
     <Compile Include="Promethium.cs" />
   </ItemGroup>
   <ItemGroup>
