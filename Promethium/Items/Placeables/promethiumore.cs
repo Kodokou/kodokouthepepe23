@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace Promethium.Items.Placeable
 {
-	public class promethiumore : ModItem
+	public class PromethiumOre : ModItem
 	{
 		public override void SetDefaults()
 		{
