@@ -1,6 +1,6 @@
 using Terraria.ModLoader;
 
-namespace Promethium.Items.Placeable
+namespace Promethium.Items.Placeables
 {
     public class PromethiumOre : ModItem
     {
