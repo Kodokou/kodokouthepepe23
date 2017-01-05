@@ -1,12 +1,11 @@
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Promethium.Items.Placeable
 {
-	public class PromethiumOre : ModItem
-	{
-		public override void SetDefaults()
-		{
+    public class PromethiumOre : ModItem
+    {
+        public override void SetDefaults()
+        {
             item.name = "Promethium Ore";
             item.width = 12;
             item.height = 12;
@@ -19,5 +18,5 @@ namespace Promethium.Items.Placeable
             item.consumable = true;
             item.createTile = mod.TileType("PromethiumOre");
         }
-	}
+    }
 }
