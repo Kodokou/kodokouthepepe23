@@ -1,0 +1,5 @@
+author = Kodokou
+
+version = 0.1
+
+displayName = Promethium
