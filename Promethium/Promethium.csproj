@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{AD18F4DC-3E29-4923-B62C-A8596801F785}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>Promethium</RootNamespace>
+    <AssemblyName>Promethium</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug</OutputPath>
+    <DefineConstants>DEBUG;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>full</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Items\Placeables\promethiumore.cs" />
+    <Compile Include="Items\Weapons\FingerofZeus.cs" />
+    <Compile Include="Items\Weapons\VortexScroll.cs" />
+    <Compile Include="Dusts\BoltDust.cs" />
+    <Compile Include="Projectiles\LightningStrike.cs" />
+    <Compile Include="Projectiles\Vortex.cs" />
+    <Compile Include="Promethium.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <ItemGroup>
+    <None Include="Items\Placeables\promethiumore.png" />
+    <None Include="Items\Weapons\FingerofZeus.png" />
+    <None Include="Items\Weapons\VortexScroll.png" />
+    <None Include="Dusts\BoltDust.png" />
+    <None Include="Projectiles\LightningStrike.png" />
+    <None Include="Projectiles\Vortex.png" />
+  </ItemGroup>
+</Project>
