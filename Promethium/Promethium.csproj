@@ -62,6 +62,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="build.txt" />
+    <Content Include="description.txt" />
     <Content Include="Items\Placeables\PromethiumOre.png" />
     <Content Include="Items\Weapons\FingerofZeus.png" />
     <Content Include="Projectiles\LightningStrike.png" />
