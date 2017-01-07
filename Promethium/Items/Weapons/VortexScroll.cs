@@ -1,6 +1,6 @@
 ﻿using Terraria.ModLoader;
 
-namespace Promethium.Items
+namespace Promethium.Items.Weapons
 {
 	public class VortexScroll : ModItem
 	{
@@ -12,7 +12,7 @@ namespace Promethium.Items
             item.height = 32;
 			item.toolTip = "Spawns a vortex that sucks in nearby enemies";
 			item.shoot = mod.ProjectileType("Vortex"); // Change to throwable projectile
-			item.shootSpeed = 1;
+			item.shootSpeed = 10;
 			item.magic = true;
 			item.useStyle = 3; // Change to throwable projectile
 			item.useTime = 10;
