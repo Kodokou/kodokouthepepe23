@@ -35,8 +35,7 @@ namespace Promethium.Projectiles
         public override void Kill(int timeLeft)
         {
             Vector2 origin = new Vector2(projectile.ai[0], projectile.ai[1]);
-            Vector2 pos = projectile.Center;
-            CreateBolt(origin, pos);
+            CreateBolt(origin, projectile.Center);
             base.Kill(timeLeft);
         }
 
@@ -49,7 +48,7 @@ namespace Promethium.Projectiles
             var positions = new System.Collections.Generic.List<float>();
             positions.Add(0);
 
-            for (int i = 0; i < length / 4; i++) positions.Add(Rand(0, 1));
+            for (int i = 0; i < length / 4; i++) positions.Add((float)Main.rand.NextDouble());
 
             positions.Sort();
 
@@ -58,41 +57,30 @@ namespace Promethium.Projectiles
 
             Vector2 prevPoint = source;
             float prevDisplacement = 0;
-            for (int i = 1; i < positions.Count; i++)
+            for (int i = 1; i < positions.Count; ++i)
             {
                 float pos = positions[i];
-
-                // used to prevent sharp angles by ensuring very close positions also have small perpendicular variation.
                 float scale = (length * Jaggedness) * (pos - positions[i - 1]);
+                float envelope = pos > 0.95F ? 20 * (1 - pos) : 1;
 
-                // defines an envelope. Points near the middle of the bolt can be further from the central line.
-                float envelope = pos > 0.95f ? 20 * (1 - pos) : 1;
-
-                float displacement = Rand(-Sway, Sway);
+                float displacement = (float)Main.rand.NextDouble() * Sway * 2 - Sway;
                 displacement -= (displacement - prevDisplacement) * (1 - scale);
                 displacement *= envelope;
 
                 Vector2 point = source + pos * tangent + displacement * normal;
-                NewLineAt(prevPoint, point);
+                NewLineAt(prevPoint, point, 128 - 128 * i / positions.Count);
                 prevPoint = point;
                 prevDisplacement = displacement;
             }
-            NewLineAt(prevPoint, dest);
+            NewLineAt(prevPoint, dest, 0);
         }
 
-        private static float Rand(float min, float max)
-        {
-            return (float)Main.rand.NextDouble() * (max - min) + min;
-        }
-
-        private void NewLineAt(Vector2 start, Vector2 end)
+        private void NewLineAt(Vector2 start, Vector2 end, int alpha)
         {
             Vector2 tangent = end - start;
             float theta = (float)System.Math.Atan2(tangent.Y, tangent.X);
-            int dust = Dust.NewDust(start, 1, 1, 269, tangent.X / 2, tangent.Y / 2, 0, Color.White, 1.2F);
-            Dust d = Main.dust[dust];
-            d.rotation = theta;
-            d.noGravity = true;
+            int dust = Dust.NewDust((start + end) / 2, 1, 1, mod.DustType("BoltDust"), 0, 0, alpha);
+            Main.dust[dust].rotation = theta;
         }
     }
 }

@@ -33,6 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Dusts\BoltDust.cs" />
     <Compile Include="Items\Placeables\PromethiumOre.cs" />
     <Compile Include="Items\Weapons\FingerofZeus.cs" />
     <Compile Include="Projectiles\LightningStrike.cs" />
@@ -64,6 +65,7 @@
   <ItemGroup>
     <Content Include="build.txt" />
     <Content Include="description.txt" />
+    <Content Include="Dusts\BoltDust.png" />
     <Content Include="Items\Placeables\PromethiumOre.png" />
     <Content Include="Items\Weapons\FingerofZeus.png" />
     <Content Include="Projectiles\LightningStrike.png" />
