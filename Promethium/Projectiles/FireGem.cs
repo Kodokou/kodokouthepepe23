@@ -54,7 +54,7 @@ namespace Promethium.Projectiles
                 if (count > 2) Main.projectile[shortestID].Kill();
             }
             Vector2 tilePos = projectile.Center / 16;
-            tilePos = new Vector2(tilePos.X, tilePos.Y + 0.2F);
+            tilePos = new Vector2(tilePos.X, tilePos.Y + 0.5F);
             if (tilePos.X >= 0 && tilePos.X < Main.maxTilesX && tilePos.Y >= 0 && tilePos.Y < Main.maxTilesY)
             {
                 Tile t = Main.tile[(int)tilePos.X, (int)tilePos.Y];

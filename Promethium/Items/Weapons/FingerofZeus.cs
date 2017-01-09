@@ -34,7 +34,7 @@ namespace Promethium.Items.Weapons
 
         public override DrawAnimation GetAnimation()
         {
-            return new DrawAnimationVertical(10, 3);
+            return base.GetAnimation(); //new DrawAnimationVertical(10, 3);
         }
     }
 }
