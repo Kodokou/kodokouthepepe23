@@ -18,6 +18,12 @@ namespace Promethium.Projectiles
             Main.projFrames[projectile.type] = 1;
         }
 
+        public override bool Autoload(ref string name, ref string texture)
+        {
+            texture = "Promethium/Items/Weapons/VoidOrb";
+            return true;
+        }
+
         public override void Kill(int timeLeft)
         {
             if (Main.myPlayer == projectile.owner)

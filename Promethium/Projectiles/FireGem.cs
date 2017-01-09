@@ -8,16 +8,16 @@ namespace Promethium.Projectiles
 {
 	public class FireGem : ModProjectile
 	{
-		const int MAX_DIST_SQ = 16 * 5 * 16 * 5;
+		private const int MAX_DIST_SQ = 16 * 5 * 16 * 5;
 
 		public override void SetDefaults()
 		{
 			projectile.name = "Fire Gem";
-			projectile.width = 20; //change later or now?
+			projectile.width = 20;
 			projectile.height = 20;
 			projectile.penetrate = -1;
 			projectile.friendly = true;
-			projectile.timeLeft = 60 * 45; //so what should this be then?
+			projectile.timeLeft = 60 * 30;
 			projectile.ignoreWater = true;
 			projectile.tileCollide = false;
 			Main.projFrames[projectile.type] = 1;
@@ -63,8 +63,7 @@ namespace Promethium.Projectiles
                         projectile.netUpdate = true; 
                     }
                 }
-                else
-                    projectile.velocity.Y += 2;
+                else projectile.velocity.Y += 2;
             }
             if (projectile.ai[0] == 1)
 				for (int i = 0; i < 200; ++i)
