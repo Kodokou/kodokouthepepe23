@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ModLoader;
+using Terraria.ID;
 
 namespace Promethium.Projectiles
 {
@@ -10,6 +11,7 @@ namespace Promethium.Projectiles
 
         public override void SetDefaults()
         {
+			
             projectile.name = "Void Vortex";
             projectile.alpha = 255;
             projectile.width = 20;
