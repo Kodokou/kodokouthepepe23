@@ -13,6 +13,7 @@ namespace Promethium.Projectiles
 		public override void SetDefaults()
 		{
 			projectile.name = "Fire Gem";
+            projectile.scale = 0.75F;
 			projectile.width = 20;
 			projectile.height = 20;
 			projectile.penetrate = -1;
@@ -29,7 +30,7 @@ namespace Promethium.Projectiles
 			return true;
 		}
 
-		public override void AI()
+        public override void AI()
         {
             if (projectile.localAI[0] == 0)
             {
@@ -50,7 +51,8 @@ namespace Promethium.Projectiles
                 }
                 if (count > 2) Main.projectile[shortestID].Kill();
             }
-			Vector2 tilePos = projectile.Center / 16;
+            Vector2 tilePos = projectile.Center / 16;
+            tilePos = new Vector2((float)Math.Round(tilePos.X), (float)Math.Round(tilePos.Y + 8));
             if (tilePos.X >= 0 && tilePos.X < Main.maxTilesX && tilePos.Y >= 0 && tilePos.Y < Main.maxTilesY)
             {
                 Tile t = Main.tile[(int)tilePos.X, (int)tilePos.Y];
@@ -60,15 +62,17 @@ namespace Promethium.Projectiles
                     if (projectile.ai[0] == 0)
                     {
                         projectile.ai[0] = 1;
-                        projectile.netUpdate = true; 
+                        projectile.netUpdate = true;
                     }
                 }
                 else projectile.velocity.Y += 2;
             }
             if (projectile.ai[0] == 1)
-				for (int i = 0; i < 200; ++i)
-				{
-					NPC n = Main.npc[i];
+            {
+                if (Main.rand.Next(3) == 0) Dust.NewDust(projectile.Center, 4, 4, DustID.Smoke);
+                for (int i = 0; i < 200; ++i)
+                {
+                    NPC n = Main.npc[i];
                     if (n.CanBeChasedBy(projectile))
                     {
                         Vector2 diff = projectile.Center - n.Center;
@@ -79,11 +83,12 @@ namespace Promethium.Projectiles
                             projectile.ai[0] = 2;
                         }
                     }
-				}
-			else if (projectile.ai[0] > 1)
-				if (++projectile.ai[0] > 10)
-					projectile.Kill();
-		}
+                }
+            }
+            else if (projectile.ai[0] > 1 && ++projectile.ai[0] > 10) projectile.Kill();
+            projectile.spriteDirection = projectile.velocity.X > 0 ? 1 : -1;
+            projectile.rotation = projectile.velocity.X * 0.1F;
+        }
 
 		public override void Kill(int timeLeft)
 		{
@@ -100,21 +105,16 @@ namespace Promethium.Projectiles
 					}
 				}
 			}
-			/*for (int i = -40; i < 40; i += 4)
-			{
-				for (int j = -40; i < 40; i += 4)
-				{
-					Vector2 potentPos = new Vector2(projectile.position.X + i, projectile.position.Y + j);
-					if (potentPos.LengthSquared() <= MAX_DIST_SQ)
-						Dust.NewDust(potentPos, 4, 4, DustID.Fire);
-				}
-			}*/
-			float count = Main.rand.Next(27, 33);
-			for (int i = 0; i < count; i++)
+			for (int i = Main.rand.Next(27, 33); i > 0; --i)
 			{
 				Vector2 vel = Main.rand.NextVector2Circular(5, 5);
 				Dust.NewDust(projectile.Center, 4, 4, DustID.Smoke, vel.X, vel.Y);
-			}
+                if (Main.rand.Next(3) == 0)
+                {
+                    vel *= 1.2F;
+                    Dust.NewDust(projectile.Center, 4, 4, DustID.Fire, vel.X, vel.Y);
+                }
+            }
 		}
 	}
 }

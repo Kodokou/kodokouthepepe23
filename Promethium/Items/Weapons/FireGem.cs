@@ -9,11 +9,11 @@ namespace Promethium.Items.Weapons
 	{
         public override void SetDefaults ()
         {
-            item.damage = 10;
+            item.damage = 50;
             item.name = "Fire Gems";
             item.width = 32;
             item.height = 32;
-            item.toolTip = "Sticks to the ground, explodes";
+            item.toolTip = "Magical gems that explode when enemies get close to them";
             item.shoot = mod.ProjectileType("FireGem");
             item.shootSpeed = 20;
             item.magic = true;
