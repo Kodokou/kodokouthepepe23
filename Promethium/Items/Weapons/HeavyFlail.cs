@@ -17,7 +17,7 @@ namespace Promethium.Items.Weapons
             item.knockBack = 7;
             item.width = 30;
             item.height = 34;
-            item.damage = 50;
+            item.damage = 20;
             item.noUseGraphic = true;
             item.shoot = mod.ProjectileType("HeavyFlail");
             item.shootSpeed = 9;
@@ -26,7 +26,7 @@ namespace Promethium.Items.Weapons
             item.value = 27000;
             item.melee = true;
             item.channel = true;
-            item.toolTip = "A powerful flail that hits harder at higher velocities";
+            item.toolTip = "Hits harder the faster you swing it around!";
         }
     }
 }
