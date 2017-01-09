@@ -32,8 +32,7 @@ namespace Promethium.Projectiles
                 for (int i = 0; i < 200; ++i)
                 {
                     Projectile p = Main.projectile[i];
-                    if (p.owner == projectile.owner && p.type == vortexId)
-                        p.Kill();
+                    if (p.owner == projectile.owner && p.type == vortexId) p.Kill();
                 }
                 Projectile.NewProjectile(projectile.Center - Vector2.UnitY * 24, Vector2.Zero, vortexId, projectile.damage, projectile.knockBack, projectile.owner);
             }
