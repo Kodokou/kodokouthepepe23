@@ -20,6 +20,7 @@ namespace Promethium.Projectiles
 			projectile.timeLeft = 60 * 25;
 			projectile.ignoreWater = true;
 			projectile.tileCollide = false;
+            projectile.minion = true;
 			Main.projFrames[projectile.type] = 1;
 		}
 

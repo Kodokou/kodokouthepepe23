@@ -14,7 +14,7 @@ namespace Promethium.Items.Weapons
 			item.toolTip = "Spawns a vortex that draws in nearby enemies";
 			item.shoot = mod.ProjectileType("VoidOrb");
 			item.shootSpeed = 10;
-			item.magic = true;
+			item.summon = true;
 			item.useStyle = 1;
 			item.useTime = 24;
 			item.useAnimation = 24;

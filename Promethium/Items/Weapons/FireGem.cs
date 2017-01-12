@@ -14,7 +14,7 @@ namespace Promethium.Items.Weapons
             item.toolTip = "Magical gems that explode when enemies get close to them";
             item.shoot = mod.ProjectileType("FireGem");
             item.shootSpeed = 15;
-            item.magic = true;
+            item.summon = true;
             item.useStyle = 1;
             item.useTime = 24;
             item.useAnimation = 24;

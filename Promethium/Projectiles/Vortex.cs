@@ -20,7 +20,7 @@ namespace Promethium.Projectiles
             projectile.ignoreWater = true;
             projectile.alpha = 255;
             projectile.penetrate = -1;
-            Main.projFrames[projectile.type] = 1;
+            projectile.minion = true;
         }
 
         public override void AI()

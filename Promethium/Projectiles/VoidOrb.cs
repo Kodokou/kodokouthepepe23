@@ -15,7 +15,7 @@ namespace Promethium.Projectiles
             projectile.friendly = true;
             projectile.timeLeft = 32;
             projectile.ignoreWater = true;
-            Main.projFrames[projectile.type] = 1;
+            projectile.minion = true;
         }
 
         public override bool Autoload(ref string name, ref string texture)

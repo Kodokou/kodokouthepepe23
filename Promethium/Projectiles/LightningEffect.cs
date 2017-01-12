@@ -38,7 +38,6 @@ namespace Promethium.Projectiles
                 CreateBolt(new Vector2(projectile.ai[0], projectile.ai[1]), projectile.position);
             }
             foreach (Line l in lines) Lighting.AddLight(l.end, 0.9F, 0.9F, 1);
-            projectile.alpha = 255 - 255 * projectile.timeLeft / 30;
         }
 
         private void CreateBolt(Vector2 source, Vector2 dest)
@@ -89,10 +88,11 @@ namespace Promethium.Projectiles
                 Vector2 tangent = l.end - l.start;
                 float theta = (float)Math.Atan2(tangent.Y, tangent.X);
                 Vector2 middleScale = new Vector2(tangent.Length(), thickScale);
-                tint *= (255 - projectile.alpha - 128 + 128 * i / lines.Count) / 255F;
-                sb.Draw(tex, l.start - Main.screenPosition, t2, tint, theta, middleOrigin, middleScale, SpriteEffects.None, 0);
-                sb.Draw(tex, l.start - Main.screenPosition, t1, tint, theta, capOrigin, thickScale, SpriteEffects.None, 0);
-                sb.Draw(tex, l.end - Main.screenPosition, t1, tint, theta + MathHelper.Pi, capOrigin, thickScale, SpriteEffects.None, 0);
+                float alpha = projectile.timeLeft / 30F - 0.3F + 0.3F * i / lines.Count;
+                Color c = tint * (alpha < 0 ? 0 : alpha);
+                sb.Draw(tex, l.start - Main.screenPosition, t2, c, theta, middleOrigin, middleScale, SpriteEffects.None, 0);
+                sb.Draw(tex, l.start - Main.screenPosition, t1, c, theta, capOrigin, thickScale, SpriteEffects.None, 0);
+                sb.Draw(tex, l.end - Main.screenPosition, t1, c, theta + MathHelper.Pi, capOrigin, thickScale, SpriteEffects.None, 0);
             }
             return false;
         }

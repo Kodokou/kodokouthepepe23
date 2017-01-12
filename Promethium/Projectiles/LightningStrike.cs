@@ -1,5 +1,4 @@
 ﻿using Terraria.ModLoader;
-using Terraria.ID;
 using Terraria;
 using Microsoft.Xna.Framework;
 
@@ -10,15 +9,14 @@ namespace Promethium.Projectiles
         public override void SetDefaults()
         {
             projectile.name = "Lightning Strike";
-            projectile.width = 16;
-            projectile.height = 16;
+            projectile.width = 24;
+            projectile.height = 24;
             projectile.friendly = true;
-            projectile.timeLeft = 80;
-            projectile.alpha = 255;
-            projectile.scale = 0.01F;
+            projectile.timeLeft = 100;
             projectile.penetrate = 1;
             projectile.extraUpdates = 20;
-            Main.projFrames[projectile.type] = 1;
+            projectile.hide = true;
+            projectile.magic = true;
         }
 
         public override void AI()
@@ -26,8 +24,9 @@ namespace Promethium.Projectiles
             if (projectile.ai[0] == 0)
             {
                 if (Main.raining) projectile.damage = projectile.damage * 3 / 2;
-                projectile.ai[0] = projectile.position.X;
-                projectile.ai[1] = projectile.position.Y;
+                Vector2 v = Main.player[projectile.owner].Center + projectile.velocity * 7;
+                projectile.ai[0] = v.X;
+                projectile.ai[1] = v.Y;
                 projectile.netUpdate = true;
             }
         }
@@ -35,7 +34,6 @@ namespace Promethium.Projectiles
         public override void Kill(int timeLeft)
         {
             Projectile.NewProjectile(projectile.Center, Vector2.Zero, mod.ProjectileType("LightningEffect"), 0, 0, projectile.owner, projectile.ai[0], projectile.ai[1]);
-            base.Kill(timeLeft);
         }
     }
 }
