@@ -7,13 +7,13 @@ namespace Promethium.Items.Weapons
 	{
 		public override void SetDefaults ()
 		{
-			item.damage = 10;
+			item.damage = 22;
 			item.name = "Void Orb";
             item.width = 32;
             item.height = 32;
 			item.toolTip = "Spawns a vortex that draws in nearby enemies";
 			item.shoot = mod.ProjectileType("VoidOrb");
-			item.shootSpeed = 10;
+			item.shootSpeed = 5;
 			item.summon = true;
 			item.useStyle = 1;
 			item.useTime = 24;

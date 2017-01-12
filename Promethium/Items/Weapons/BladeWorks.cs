@@ -48,12 +48,12 @@ namespace Promethium.Items.Weapons
             if (ai0 > plr.Center.Y - 200) ai0 = plr.Center.Y - 200;
             for (int i = 0; i < 2; ++i)
             {
-                Vector2 spawnPos = plr.Center - new Vector2(Main.rand.Next(25, 250) * plr.direction, 160);
-                spawnPos.Y -= 24 * i;
+                Vector2 spawnPos = plr.Center - new Vector2(Main.rand.Next(25, 250) * plr.direction, 150);
+                spawnPos.Y -= 25 * i;
                 Vector2 speed = targetPos - spawnPos;
                 speed.Normalize();
-                speed *= 14;
-                speed.Y += Main.rand.Next(-40, 41) * 0.015F;
+                speed *= 12;
+                speed.Y += Main.rand.Next(-40, 41) * 0.0125F;
                 Item temp = new Item();
                 temp.SetDefaults(GetItemID());
                 Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType("BladeProjection"), plr.GetWeaponDamage(temp) * item.damage / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, ai0, temp.type);

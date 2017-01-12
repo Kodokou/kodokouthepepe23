@@ -9,19 +9,30 @@ namespace Promethium.Projectiles
         public override void SetDefaults()
         {
             projectile.name = "Void Orb";
-            projectile.width = 20;
-            projectile.height = 20;
-            projectile.aiStyle = 2;
+            projectile.width = 24;
+            projectile.height = 24;
             projectile.friendly = true;
-            projectile.timeLeft = 32;
+            projectile.timeLeft = 96;
             projectile.ignoreWater = true;
             projectile.minion = true;
+            projectile.extraUpdates = 1;
         }
 
         public override bool Autoload(ref string name, ref string texture)
         {
             texture = "Promethium/Items/Weapons/VoidOrb";
             return true;
+        }
+
+        public override void AI()
+        {
+            if (projectile.ai[0] == 0 && Main.myPlayer == projectile.owner)
+            {
+                projectile.ai[0] = Main.mouseX + Main.screenPosition.X;
+                projectile.ai[1] = Main.mouseY + Main.screenPosition.Y;
+                projectile.netUpdate = true;
+            }
+            else if (projectile.DistanceSQ(new Vector2(projectile.ai[0], projectile.ai[1])) < 6) projectile.Kill();
         }
 
         public override void Kill(int timeLeft)
@@ -32,9 +43,9 @@ namespace Promethium.Projectiles
                 for (int i = 0; i < 200; ++i)
                 {
                     Projectile p = Main.projectile[i];
-                    if (p.owner == projectile.owner && p.type == vortexId) p.Kill();
+                    if (p.owner == projectile.owner && p.type == vortexId && p.timeLeft > 30) p.timeLeft = 30;
                 }
-                Projectile.NewProjectile(projectile.Center - Vector2.UnitY * 24, Vector2.Zero, vortexId, projectile.damage, projectile.knockBack, projectile.owner);
+                Projectile.NewProjectile(projectile.Center + projectile.velocity, Vector2.Zero, vortexId, projectile.damage, projectile.knockBack, projectile.owner);
             }
         }
     }

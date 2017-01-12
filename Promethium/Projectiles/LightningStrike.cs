@@ -33,7 +33,27 @@ namespace Promethium.Projectiles
 
         public override void Kill(int timeLeft)
         {
-            Projectile.NewProjectile(projectile.Center, Vector2.Zero, mod.ProjectileType("LightningEffect"), 0, 0, projectile.owner, projectile.ai[0], projectile.ai[1]);
+            SpawnEffect(projectile.Center);
+        }
+
+        private void SpawnEffect(Vector2 endPos)
+        {
+            if (projectile.localAI[0] == 0)
+            {
+                projectile.localAI[0] = 1;
+                if (Main.myPlayer == projectile.owner)
+                    Projectile.NewProjectile(endPos, Vector2.Zero, mod.ProjectileType("LightningEffect"), 0, 0, projectile.owner, projectile.ai[0], projectile.ai[1]);
+            }
+        }
+
+        public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
+        {
+            SpawnEffect(target.Center);
+        }
+
+        public override void ModifyHitPvp(Player target, ref int damage, ref bool crit)
+        {
+            SpawnEffect(target.Center);
         }
     }
 }
