@@ -16,11 +16,11 @@ namespace Promethium.Items.Weapons
             item.width = 30;
             item.height = 34;
             item.useStyle = 5;
-            item.useAnimation = 26;
-            item.useTime = 26;
+            item.useAnimation = 22;
+            item.useTime = 22;
             item.magic = true;
             item.value = Item.buyPrice(0, 2);
-            item.mana = 10;
+            item.mana = 9;
             item.rare = 3;
             item.noMelee = true;
             item.toolTip = "'I am the bone of my sword...'";
@@ -63,15 +63,17 @@ namespace Promethium.Items.Weapons
 
         private static int GetItemID()
         {
-            int i = Main.rand.Next(25);
+            int i = Main.rand.Next(125);
+            if (i == 124) return ItemID.Excalibur;
+            else i /= 5;
             if (i == 24) return ItemID.LightsBane;
             else i %= 6;
-            if (i == 0) return ItemID.IronBroadsword;
+            if (i == 0) return ItemID.LeadBroadsword;
             else if (i == 1) return ItemID.SilverBroadsword;
             else if (i == 2) return ItemID.GoldBroadsword;
-            else if (i == 3) return ItemID.LeadBroadsword;
+            else if (i == 3) return ItemID.PlatinumBroadsword;
             else if (i == 4) return ItemID.TungstenBroadsword;
-            else return ItemID.PlatinumBroadsword;
+            else return ItemID.PearlwoodSword;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace Promethium
             projectile.width = 36; 
             projectile.height = 16;
             projectile.tileCollide = false;
-            projectile.timeLeft = 240;
+            projectile.timeLeft = 260;
             projectile.friendly = true;
             projectile.magic = true;
         }
@@ -34,8 +34,10 @@ namespace Promethium
                 projectile.ai[1] = 0;
                 projectile.netUpdate = true;
                 projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X);
+                projectile.velocity /= 10;
                 SpawnEffect();
             }
+            else if (projectile.timeLeft == 235) projectile.velocity *= 10;
             if (projectile.ai[1] == 0 && !Collision.SolidCollision(projectile.position, projectile.width, projectile.height))
             {
                 projectile.ai[1] = 1;
@@ -66,7 +68,7 @@ namespace Promethium
         {
             for (int i = 0; i < 25; ++i)
             {
-                Vector2 v = Main.rand.NextVector2Circular(40, 7).RotatedBy(projectile.rotation);
+                Vector2 v = Main.rand.NextVector2Circular(40, 5).RotatedBy(projectile.rotation);
                 int dust = Dust.NewDust(projectile.position + v, 1, 1, 204, projectile.velocity.X / 1.5F, projectile.velocity.Y / 1.5F, 64);
                 Main.dust[dust].noGravity = true;
             }
