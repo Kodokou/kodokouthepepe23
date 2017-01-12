@@ -10,7 +10,7 @@ namespace Promethium.Items.Weapons
         public override void SetDefaults()
         {
             item.name = "Finger of Zeus";
-            item.damage = 40;
+            item.damage = 70;
             item.magic = true;
             item.mana = 5;
             item.width = 40;
