@@ -11,8 +11,8 @@ namespace Promethium.Projectiles
         public override void SetDefaults()
         {
             projectile.name = "HeavyFlail";
-            projectile.width = 26;
-            projectile.height = 26;
+            projectile.width = 40;
+            projectile.height = 40;
             projectile.aiStyle = 15;
             projectile.friendly = true;
             projectile.penetrate = -1;
@@ -43,7 +43,7 @@ namespace Promethium.Projectiles
             Vector2 origin = new Vector2(chainTex.Width / 2F, chainTex.Height / 2F);
             float texH = chainTex.Height;
             Vector2 diff = plrPos - projPos;
-            float rotation = (float)Math.Atan2(diff.Y, diff.X) - 1.57f;
+            float rotation = diff.ToRotation() - (float)Math.PI / 2;
             bool draw = true;
             if (float.IsNaN(projPos.X) && float.IsNaN(projPos.Y)) draw = false;
             if (float.IsNaN(diff.X) && float.IsNaN(diff.Y)) draw = false;

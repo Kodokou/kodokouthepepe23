@@ -15,8 +15,8 @@ namespace Promethium.Items.Weapons
             item.useAnimation = 45;
             item.useTime = 45;
             item.knockBack = 7;
-            item.width = 30;
-            item.height = 34;
+            item.width = 34;
+            item.height = 38;
             item.damage = 20;
             item.noUseGraphic = true;
             item.shoot = mod.ProjectileType("HeavyFlail");

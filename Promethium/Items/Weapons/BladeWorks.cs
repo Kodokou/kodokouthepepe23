@@ -43,7 +43,7 @@ namespace Promethium.Items.Weapons
         public override bool UseItem(Player plr)
         {
             Vector2 targetPos = Main.screenPosition + new Vector2(Main.mouseX, Main.mouseY);
-            plr.direction = targetPos.X < plr.Center.X ? -1 : 1;
+            plr.ChangeDir(targetPos.X < plr.Center.X ? -1 : 1);
             float ai0 = targetPos.Y;
             if (ai0 > plr.Center.Y - 200) ai0 = plr.Center.Y - 200;
             for (int i = 0; i < 2; ++i)

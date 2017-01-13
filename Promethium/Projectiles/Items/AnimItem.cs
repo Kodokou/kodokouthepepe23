@@ -1,37 +1,82 @@
 ﻿using Terraria.ModLoader;
+using Terraria.ID;
 using Terraria;
-using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
+using System;
 
 namespace Promethium.Projectiles.Items
 {
     public abstract class AnimItem : ModProjectile
     {
-        public int frames;
-        public Texture2D texture;
+        private int frames, animSpeed;
 
-        public virtual void Initialize() { }
-        public virtual void Animate()
+        public sealed override void SetDefaults()
         {
-            if (frames != 1 && projectile.ai[0]++ % 10 == 0)
-                projectile.frame += projectile.ai[0] / 10 % frames * texture.Height;
-        }
-        public virtual void RealAI() { }
-
-        public override void SetDefaults()
-        {
-            Initialize();
             projectile.friendly = true;
-            texture = mod.GetTexture("Projectiles/" + projectile.name);
-            frames = texture.Height / projectile.height;
+            projectile.penetrate = -1;
+            projectile.ignoreWater = true;
+            projectile.tileCollide = false;
+            SetDefaults(ref frames, ref animSpeed);
             Main.projFrames[projectile.type] = frames;
         }
-        //removed CanDamage because spears and other melee projectiles
-        public override void AI()
+
+        public abstract void SetDefaults(ref int frames, ref int animSpeed);
+
+        public virtual void CustomAI() { }
+
+        public void ShootProjectile(string name, float speed, Terraria.Audio.LegacySoundStyle sound = null)
         {
-            Animate();
-            RealAI();
-            if (!projectile.aiStyle <= 0)
-                base.AI();
+            Vector2 v = projectile.Center;
+            if (sound != null) Main.PlaySound(sound, v);
+            Projectile.NewProjectile(v, Vector2.Normalize(projectile.velocity) * speed, mod.ProjectileType(name), projectile.damage, projectile.knockBack, projectile.owner);
+        }
+
+        public void UpdateRotation()
+        {
+            Player plr = Main.player[projectile.owner];
+            Vector2 rotRelPos = plr.RotatedRelativePoint(plr.MountedCenter);
+            if (Main.myPlayer == projectile.owner)
+            {
+                if (plr.channel)
+                {
+                    float plrDist = plr.inventory[plr.selectedItem].shootSpeed * projectile.scale;
+                    float posX = Main.mouseX + Main.screenPosition.X - rotRelPos.X;
+                    float posY = Main.screenPosition.Y - rotRelPos.Y;
+                    posY += plr.gravDir == -1 ? Main.screenHeight - Main.mouseY : Main.mouseY;
+                    float mult = plrDist / (float)Math.Sqrt(posX * posX + posY * posY);
+                    posX *= mult;
+                    posY *= mult;
+                    if (posX != projectile.velocity.X || posY != projectile.velocity.Y) projectile.netUpdate = true;
+                    projectile.velocity.X = posX;
+                    projectile.velocity.Y = posY;
+                }
+            }
+            projectile.position.X = rotRelPos.X - projectile.width / 2F;
+            projectile.position.Y = rotRelPos.Y - projectile.height / 2F;
+            if (projectile.velocity.X > 0) plr.ChangeDir(1);
+            else if (projectile.velocity.X < 0) plr.ChangeDir(-1);
+            projectile.spriteDirection = projectile.direction = plr.direction;
+            Vector2 rot = projectile.velocity * plr.direction;
+            plr.itemRotation = rot.ToRotation();
+            projectile.rotation = plr.itemRotation + (float)Math.PI / 4 * plr.direction;
+        }
+
+        public sealed override void AI()
+        {
+            if (++projectile.frameCounter >= animSpeed)
+            {
+                projectile.frameCounter = 0;
+                if (++projectile.frame >= frames) projectile.frame = 0;
+            }
+            Player plr = Main.player[projectile.owner];
+            Vector2 rotRelPos = plr.RotatedRelativePoint(plr.MountedCenter);
+            if (Main.myPlayer == projectile.owner && !plr.channel) projectile.Kill();
+            plr.heldProj = projectile.whoAmI;
+            plr.itemTime = 2;
+            plr.itemAnimation = 2;
+            projectile.position.X = rotRelPos.X - projectile.width / 2F;
+            projectile.position.Y = rotRelPos.Y - projectile.height / 2F;
+            CustomAI();
         }
     }
 }

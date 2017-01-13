@@ -9,8 +9,8 @@ namespace Promethium.Projectiles
         public override void SetDefaults()
         {
             projectile.name = "Lightning Strike";
-            projectile.width = 24;
-            projectile.height = 24;
+            projectile.width = 20;
+            projectile.height = 20;
             projectile.friendly = true;
             projectile.timeLeft = 100;
             projectile.penetrate = 1;
