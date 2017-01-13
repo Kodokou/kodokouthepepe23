@@ -6,6 +6,8 @@ namespace Promethium.Items.Weapons
 {
     public class MainGauche : ModItem
     {
+        private int coolDown = 0;
+
         public override void SetDefaults()
         {
             item.damage = 11;
@@ -31,14 +33,19 @@ namespace Promethium.Items.Weapons
 
         public override void OnHitPvp(Player player, Player target, int damage, bool crit)
         {
-            if (item.ownTime == 0)
+            if (coolDown == 0)
             {
-                item.ownTime = 30;
+                coolDown = 30;
                 player.velocity /= 2;
                 player.velocity.X -= player.direction * 8;
                 player.velocity.Y -= 6;
                 player.AddBuff(BuffID.Swiftness, 90, false);
             }
+        }
+
+        public override void UpdateInventory(Player player)
+        {
+            if (coolDown > 0) --coolDown;
         }
     }
 }
