@@ -52,7 +52,7 @@ namespace Promethium.Items.Weapons
                 spawnPos.Y -= 25 * i;
                 Vector2 speed = targetPos - spawnPos;
                 speed.Normalize();
-                speed *= 12;
+                speed *= 16;
                 speed.Y += Main.rand.Next(-40, 41) * 0.0125F;
                 Item temp = new Item();
                 temp.SetDefaults(GetItemID());
@@ -63,10 +63,10 @@ namespace Promethium.Items.Weapons
 
         private static int GetItemID()
         {
-            int i = Main.rand.Next(125);
-            if (i == 124) return ItemID.Excalibur;
+            int i = Main.rand.Next(126);
+            if (i == 125) return ItemID.Excalibur;
             else i /= 5;
-            if (i == 24) return ItemID.LightsBane;
+            if (i == 24) return ItemID.EnchantedSword;
             else i %= 6;
             if (i == 0) return ItemID.LeadBroadsword;
             else if (i == 1) return ItemID.SilverBroadsword;

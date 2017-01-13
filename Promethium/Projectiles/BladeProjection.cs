@@ -66,7 +66,7 @@ namespace Promethium
 
         private void SpawnEffect()
         {
-            for (int i = 0; i < 25; ++i)
+            for (int i = 0; i < 30; ++i)
             {
                 Vector2 v = Main.rand.NextVector2Circular(40, 5).RotatedBy(projectile.rotation);
                 int dust = Dust.NewDust(projectile.position + v, 1, 1, 204, projectile.velocity.X / 1.5F, projectile.velocity.Y / 1.5F, 64);
