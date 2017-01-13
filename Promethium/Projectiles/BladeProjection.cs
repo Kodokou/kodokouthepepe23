@@ -4,6 +4,7 @@ using Terraria.ModLoader;
 using Terraria.ID;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 
 namespace Promethium
 {
@@ -28,16 +29,18 @@ namespace Promethium
 
         public override void AI()
         {
-            if (projectile.frame == 0)
+            if (projectile.localAI[1] == 0)
             {
-                projectile.frame = (int)projectile.ai[1];
-                projectile.ai[1] = 0;
-                projectile.netUpdate = true;
+                projectile.localAI[1] = 1;
                 projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X);
                 projectile.velocity /= 10;
                 SpawnEffect();
             }
-            else if (projectile.timeLeft == 235) projectile.velocity *= 10;
+            else if (projectile.timeLeft < 236 && projectile.localAI[1] == 1)
+            {
+                projectile.velocity *= 10;
+                projectile.localAI[1] = 2;
+            }
             if (projectile.ai[1] == 0 && !Collision.SolidCollision(projectile.position, projectile.width, projectile.height))
             {
                 projectile.ai[1] = 1;
@@ -83,7 +86,7 @@ namespace Promethium
         public override bool PreDraw(SpriteBatch sb, Color lightColor)
         {
             Vector2 actualPos = projectile.position - Main.screenPosition;
-            sb.Draw(Main.itemTexture[projectile.frame], actualPos, null, lightColor * (255 - projectile.alpha), projectile.rotation + (float)Math.PI / 4, new Vector2(projectile.width / 2F, projectile.height / 2F), 1, SpriteEffects.None, 0);
+            sb.Draw(Main.itemTexture[(int)projectile.ai[0]], actualPos, null, lightColor * (255 - projectile.alpha), projectile.rotation + (float)Math.PI / 4, new Vector2(projectile.width / 2F, projectile.height / 2F), 1, SpriteEffects.None, 0);
             return false;
         }
     }

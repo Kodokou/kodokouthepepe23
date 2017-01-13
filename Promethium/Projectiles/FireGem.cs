@@ -13,7 +13,7 @@ namespace Promethium.Projectiles
 		public override void SetDefaults()
 		{
 			projectile.name = "Fire Gem";
-            projectile.scale = 0.6F;
+            projectile.scale = 0.9F;
 			projectile.width = 18;
 			projectile.height = 30;
 			projectile.friendly = true;
@@ -34,25 +34,27 @@ namespace Promethium.Projectiles
 
         public override void AI()
         {
-            if (projectile.localAI[0] == 0)
+            if (projectile.ai[1] == 0)
             {
-                projectile.localAI[0] = projectile.damage;
+                projectile.ai[1] = projectile.damage;
                 projectile.damage = 1;
-                int count = 0, shortestTimeLeft = projectile.timeLeft, shortestID = -1;
-                for (int i = 0; i < 200; i++)
+                if (Main.player[projectile.owner].ownedProjectileCounts[projectile.type] > 2)
                 {
-                    Projectile p = Main.projectile[i];
-                    if (p.active && p.type == mod.ProjectileType("FireGem") && p.owner == projectile.owner)
+                    int shortestTimeLeft = projectile.timeLeft, shortestID = -1;
+                    for (int i = 0; i < 200; i++)
                     {
-                        if (p.timeLeft < shortestTimeLeft)
+                        Projectile p = Main.projectile[i];
+                        if (p.active && p.type == mod.ProjectileType("FireGem") && p.owner == projectile.owner)
                         {
-                            shortestTimeLeft = p.timeLeft;
-                            shortestID = i;
+                            if (p.timeLeft < shortestTimeLeft)
+                            {
+                                shortestTimeLeft = p.timeLeft;
+                                shortestID = i;
+                            }
                         }
-                        ++count;
                     }
+                    Main.projectile[shortestID].Kill();
                 }
-                if (count > 2) Main.projectile[shortestID].Kill();
             }
             Vector2 tilePos = projectile.Center / 16;
             tilePos = new Vector2(tilePos.X, tilePos.Y + 0.5F);
@@ -109,6 +111,7 @@ namespace Promethium.Projectiles
 						n.StrikeNPC((int)projectile.localAI[0], projectile.knockBack, -Math.Sign(diff.X));
 				}
 			}
+            Main.PlaySound(SoundID.Item62, projectile.Center);
 			for (int i = Main.rand.Next(27, 33); i > 0; --i)
 			{
 				Vector2 vel = Main.rand.NextVector2Circular(7, 7);

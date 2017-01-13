@@ -58,7 +58,6 @@ namespace Promethium.Projectiles.Items
             projectile.spriteDirection = projectile.direction = plr.direction;
             Vector2 rot = projectile.velocity * plr.direction;
             plr.itemRotation = rot.ToRotation();
-            projectile.rotation = plr.itemRotation + (float)Math.PI / 4 * plr.direction;
         }
 
         public sealed override void AI()
@@ -77,6 +76,7 @@ namespace Promethium.Projectiles.Items
             projectile.position.X = rotRelPos.X - projectile.width / 2F;
             projectile.position.Y = rotRelPos.Y - projectile.height / 2F;
             CustomAI();
+            projectile.rotation = plr.itemRotation + (float)Math.PI / 4 * plr.direction;
         }
     }
 }

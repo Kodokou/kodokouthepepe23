@@ -44,8 +44,6 @@ namespace Promethium.Items.Weapons
         {
             Vector2 targetPos = Main.screenPosition + new Vector2(Main.mouseX, Main.mouseY);
             plr.ChangeDir(targetPos.X < plr.Center.X ? -1 : 1);
-            float ai0 = targetPos.Y;
-            if (ai0 > plr.Center.Y - 200) ai0 = plr.Center.Y - 200;
             for (int i = 0; i < 2; ++i)
             {
                 Vector2 spawnPos = plr.Center - new Vector2(Main.rand.Next(25, 250) * plr.direction, 150);
@@ -56,7 +54,7 @@ namespace Promethium.Items.Weapons
                 speed.Y += Main.rand.Next(-40, 41) * 0.0125F;
                 Item temp = new Item();
                 temp.SetDefaults(GetItemID());
-                Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType("BladeProjection"), plr.GetWeaponDamage(temp) * item.damage / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, ai0, temp.type);
+                Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType("BladeProjection"), plr.GetWeaponDamage(temp) * item.damage / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, temp.type);
             }
             return true;
         }

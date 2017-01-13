@@ -7,7 +7,7 @@ namespace Promethium.Items.Weapons
 	{
         public override void SetDefaults ()
         {
-            item.damage = 35;
+            item.damage = 42;
             item.name = "Fire Gems";
             item.width = 18;
             item.height = 30;
@@ -18,7 +18,7 @@ namespace Promethium.Items.Weapons
             item.useStyle = 1;
             item.useTime = 24;
             item.useAnimation = 24;
-            item.mana = 30;
+            item.mana = 28;
             item.noUseGraphic = true;
             item.noMelee = true;
             item.autoReuse = false;
