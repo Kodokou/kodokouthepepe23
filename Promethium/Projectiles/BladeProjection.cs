@@ -34,12 +34,14 @@ namespace Promethium
                 projectile.localAI[1] = 1;
                 projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X);
                 projectile.velocity /= 10;
+                projectile.netUpdate = true;
                 SpawnEffect();
             }
-            else if (projectile.timeLeft < 236 && projectile.localAI[1] == 1)
+            else if (projectile.timeLeft == 235 && projectile.localAI[1] == 1)
             {
                 projectile.velocity *= 10;
                 projectile.localAI[1] = 2;
+                projectile.netUpdate = true;
             }
             if (projectile.ai[1] == 0 && !Collision.SolidCollision(projectile.position, projectile.width, projectile.height))
             {

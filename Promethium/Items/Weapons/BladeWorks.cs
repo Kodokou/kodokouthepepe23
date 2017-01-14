@@ -23,7 +23,7 @@ namespace Promethium.Items.Weapons
             item.mana = 9;
             item.rare = 3;
             item.noMelee = true;
-            item.toolTip = "'I am the bone of my sword...'";
+            item.toolTip = "'I am the Bone of my Sword...'";
             item.UseSound = SoundID.Item8;
         }
 
@@ -42,19 +42,22 @@ namespace Promethium.Items.Weapons
 
         public override bool UseItem(Player plr)
         {
-            Vector2 targetPos = Main.screenPosition + new Vector2(Main.mouseX, Main.mouseY);
-            plr.ChangeDir(targetPos.X < plr.Center.X ? -1 : 1);
-            for (int i = 0; i < 2; ++i)
+            if (Main.myPlayer == plr.whoAmI)
             {
-                Vector2 spawnPos = plr.Center - new Vector2(Main.rand.Next(25, 250) * plr.direction, 150);
-                spawnPos.Y -= 25 * i;
-                Vector2 speed = targetPos - spawnPos;
-                speed.Normalize();
-                speed *= 16;
-                speed.Y += Main.rand.Next(-40, 41) * 0.0125F;
-                Item temp = new Item();
-                temp.SetDefaults(GetItemID());
-                Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType("BladeProjection"), plr.GetWeaponDamage(temp) * item.damage / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, temp.type);
+                Vector2 targetPos = Main.screenPosition + new Vector2(Main.mouseX, Main.mouseY);
+                plr.ChangeDir(targetPos.X < plr.Center.X ? -1 : 1);
+                for (int i = 0; i < 2; ++i)
+                {
+                    Vector2 spawnPos = plr.Center - new Vector2(Main.rand.Next(25, 250) * plr.direction, 150);
+                    spawnPos.Y -= 25 * i;
+                    Vector2 speed = targetPos - spawnPos;
+                    speed.Normalize();
+                    speed *= 16;
+                    speed.Y += Main.rand.Next(-40, 41) * 0.0125F;
+                    Item temp = new Item();
+                    temp.SetDefaults(GetItemID());
+                    Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType("BladeProjection"), plr.GetWeaponDamage(temp) * item.damage / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, temp.type);
+                }
             }
             return true;
         }

@@ -28,7 +28,8 @@ namespace Promethium.Projectiles.Items
         {
             Vector2 v = projectile.Center;
             if (sound != null) Main.PlaySound(sound, v);
-            Projectile.NewProjectile(v, Vector2.Normalize(projectile.velocity) * speed, mod.ProjectileType(name), projectile.damage, projectile.knockBack, projectile.owner);
+            if (Main.myPlayer == projectile.owner)
+                Projectile.NewProjectile(v, Vector2.Normalize(projectile.velocity) * speed, mod.ProjectileType(name), projectile.damage, projectile.knockBack, projectile.owner);
         }
 
         public void UpdateRotation()

@@ -23,16 +23,17 @@ namespace Promethium.Projectiles.Items
 
         public override void CustomAI()
         {
-            if (Main.myPlayer == projectile.owner)
+            Player plr = Main.player[projectile.owner];
+            if (projectile.ai[0]++ == 0 && plr.CheckMana(5, true))
             {
-                Player plr = Main.player[projectile.owner];
-                if (projectile.localAI[0]++ == 0 && plr.CheckMana(5, true))
-                {
-                    plr.manaRegenDelay = (int)plr.maxRegenDelay;
-                    UpdateRotation();
-                    ShootProjectile("LightningStrike", 6, SoundID.Item20);
-                }
-                else if (projectile.localAI[0] == 10) projectile.localAI[0] = 0;
+                plr.manaRegenDelay = (int)plr.maxRegenDelay;
+                UpdateRotation();
+                ShootProjectile("LightningStrike", 6, SoundID.Item20);
+            }
+            else if (projectile.ai[0] == 10)
+            {
+                projectile.ai[0] = 0;
+                projectile.netUpdate = true;
             }
         }
     }
