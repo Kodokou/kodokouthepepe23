@@ -24,21 +24,27 @@ namespace Promethium.Projectiles.Items
         {
             UpdateRotation();
             Player plr = Main.player[projectile.owner];
-            if (projectile.ai[0] < 60 && ++projectile.ai[0] % 30 == 0)
+            if (projectile.ai[0] < 80 && ++projectile.ai[0] % 40 == 0)
             {
-                if (!plr.CheckMana(15, true)) projectile.ai[0] -= 30;
+                if (plr.CheckMana(15, true))
+                {
+                    projectile.damage *= 2;
+                    for (int i = 0; i < 30; ++i)
+                        Dust.NewDust(projectile.position, projectile.width, projectile.height, ProjectileID.Fireball);
+                    Main.PlaySound(SoundID.Item13, projectile.Center);
+                }
+                else projectile.ai[0] -= 40;
                 plr.manaRegenDelay = (int)plr.maxRegenDelay;
-                for (int i = 0; i < 20; ++i)
-                    Dust.NewDust(projectile.position, projectile.width, projectile.height, ProjectileID.Fireball);
-                Main.PlaySound(SoundID.Item13, projectile.Center);
             }
         }
 
         public override void Kill(int timeLeft)
         {
-            // TODO: CHANGE THIS TO OTHER BALLZ
-            for (int i = (int)projectile.ai[0] / 30; i >= 0; --i)
-                ShootProjectile("FireballSmall", 10 + i * 2, SoundID.Item20);
+            string proj = "Fireball";
+            if (projectile.ai[0] >= 80) proj += "Large";
+            else if (projectile.ai[0] >= 40) proj += "Med";
+            else proj += "Small"; 
+            ShootProjectile(proj, 12, SoundID.Item20);
         }
     }
 }
