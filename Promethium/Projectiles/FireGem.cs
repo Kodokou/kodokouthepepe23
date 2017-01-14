@@ -108,7 +108,7 @@ namespace Promethium.Projectiles
 					Vector2 diff = projectile.Center - n.Center;
 					float distSq = diff.LengthSquared();
 					if (distSq <= MAX_DIST_SQ)
-						n.StrikeNPC((int)projectile.localAI[0], projectile.knockBack, -Math.Sign(diff.X));
+						n.NetStrikeNPC((int)projectile.ai[1], projectile.knockBack, -Math.Sign(diff.X));
 				}
 			}
             Main.PlaySound(SoundID.Item62, projectile.Center);
