@@ -60,8 +60,7 @@ namespace Promethium.Projectiles
             tilePos = new Vector2(tilePos.X, tilePos.Y + 0.5F);
             if (tilePos.X >= 0 && tilePos.X < Main.maxTilesX && tilePos.Y >= 0 && tilePos.Y < Main.maxTilesY)
             {
-                Tile t = Main.tile[(int)tilePos.X, (int)tilePos.Y];
-                if (t != null && t.nactive() && (Main.tileSolid[t.type] || (Main.tileSolidTop[t.type] && t.frameY == 0)))
+                if (Main.tile[(int)tilePos.X, (int)tilePos.Y].IsSolid())
                 {
                     projectile.velocity = Vector2.Zero;
                     if (projectile.ai[0] == 0)
