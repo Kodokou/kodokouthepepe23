@@ -85,27 +85,25 @@ namespace Promethium
         }
 
         public static readonly PlayerLayer frontLayer = new PlayerLayer("Promethium", "CCM Front Layer", PlayerLayer.MiscEffectsFront, drawInfo =>
+        {
+            Mod mod = ModLoader.GetMod("Promethium");
+            Player plr = drawInfo.drawPlayer;
+            CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(mod);
+            if (mplr.manaBucklerLeft > 0)
             {
-                
-                Mod mod = ModLoader.GetMod("Promethium");
-                Player plr = drawInfo.drawPlayer;
-                CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(mod);
-                if (mplr.manaBucklerLeft > 0)
-                {
-                    
-                    Texture2D tex = mod.GetTexture("Items/Weapons/ManaBuckler");
-                    Vector2 pos = plr.MountedCenter + Vector2.UnitX * 8 * plr.direction;
-                    float step = System.Math.Abs(mplr.time - 64) / 64F;
-                    float scale = step * 0.2F + 0.9F;
-                    Color c = Lighting.GetColor((int)(pos.X / 16F), (int)(pos.Y / 16F)) * (step * 0.5F + 0.25F);
-                    pos -=  Main.screenPosition;
-                    var data = new Terraria.DataStructures.DrawData(tex, pos, null, c, 0, tex.Size() / 2 * scale, scale, SpriteEffects.None, 0);
-                    Main.playerDrawData.Add(data);
+                Texture2D tex = mod.GetTexture("Items/Weapons/ManaBuckler");
+                Vector2 pos = plr.MountedCenter + Vector2.UnitX * 8 * plr.direction;
+                float step = System.Math.Abs(mplr.time - 64) / 64F;
+                float scale = step * 0.2F + 0.9F;
+                Color c = Lighting.GetColor((int)(pos.X / 16F), (int)(pos.Y / 16F)) * (step * 0.5F + 0.25F);
+                pos -= Main.screenPosition;
+                var data = new Terraria.DataStructures.DrawData(tex, pos, null, c, 0, tex.Size() / 2 * scale, scale, SpriteEffects.None, 0);
+                Main.playerDrawData.Add(data);
 
-                    // TODO: Maybe some effects IDK, that's how you do them tho
-                    //int dust = Dust.NewDust();
-                    //Main.playerDrawDust.Add(dust); // Important apparently
-                }
-            });
+                // TODO: Maybe some effects IDK, that's how you do them tho
+                //int dust = Dust.NewDust();
+                //Main.playerDrawDust.Add(dust); // Important apparently
+            }
+        });
     }
 }
