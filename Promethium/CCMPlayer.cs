@@ -1,4 +1,5 @@
 ﻿using Terraria.ModLoader;
+using Terraria.ID;
 using Terraria;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -43,17 +44,21 @@ namespace Promethium
 
         public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
         {
-            int diff = player.statLifeMax2 - player.statLife, buffIndex = player.FindBuffIndex(mod.BuffType("ManaBuckler"));
-            if (0 < diff && !(player.statMana - diff * 2 < 0) && manaBucklerLeft > 0)
-            {
-                manaBucklerLeft--;
-                player.statMana -= diff * 2;
-                player.statLife += diff;
-            }
-            if (player.statMana - diff * 2 < 0 || manaBucklerLeft < 1)
-            {
-                player.buffTime[buffIndex] = 0;
-            }   
+            int diff = player.statLife - damage;
+            if (damage > 1)
+                if (player.statMana > damage * 1.5F && manaBucklerLeft > 0)
+                {
+                    player.statMana -= (int)(damage * 1.5F);
+                    player.manaRegenDelay = (int)player.maxRegenDelay;
+                    damage = 0;
+                    crit = false;
+                    if (--manaBucklerLeft < 1)
+                    {
+                        int buff = player.FindBuffIndex(mod.BuffType("ManaBuckler"));
+                        if (buff != -1) player.buffTime[buff] = 0;
+                    }
+                    for (int i = 0; i < 20; ++i) Dust.NewDust(player.MountedCenter, player.width, player.height, DustID.Blood, 0, 0, 128, Color.LightBlue);
+                }
         }
 
         public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
@@ -75,7 +80,7 @@ namespace Promethium
 
         public override void PostUpdate()
         {
-            if (++time >= 256)
+            if (++time >= 128)
                 time = 0;
         }
 
@@ -90,7 +95,7 @@ namespace Promethium
                     
                     Texture2D tex = mod.GetTexture("Items/Weapons/ManaBuckler");
                     Vector2 pos = plr.MountedCenter + Vector2.UnitX * 8 * plr.direction;
-                    float step = System.Math.Abs(mplr.time - 128) / 128F;
+                    float step = System.Math.Abs(mplr.time - 64) / 64F;
                     float scale = step * 0.2F + 0.9F;
                     Color c = Lighting.GetColor((int)(pos.X / 16F), (int)(pos.Y / 16F)) * (step * 0.5F + 0.25F);
                     pos -=  Main.screenPosition;
