@@ -15,7 +15,7 @@ namespace Promethium.Projectiles.Fireball
             projectile.friendly = true;
             projectile.magic = true;
             projectile.aiStyle = 0;
-            projectile.penetrate = 2;
+            projectile.penetrate = 3;
         }
 
         public override void AI()
@@ -26,6 +26,12 @@ namespace Promethium.Projectiles.Fireball
                 projectile.rotation = projectile.velocity.ToRotation() + (float)System.Math.PI / 4;
             }
             if (Main.rand.Next(2) == 0)
+                Dust.NewDust(projectile.position, projectile.width, projectile.height, ProjectileID.Fireball, projectile.velocity.X / 2, projectile.velocity.Y / 2);
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            for (int i = 0; i < projectile.damage; ++i)
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, ProjectileID.Fireball, projectile.velocity.X / 2, projectile.velocity.Y / 2);
         }
     }

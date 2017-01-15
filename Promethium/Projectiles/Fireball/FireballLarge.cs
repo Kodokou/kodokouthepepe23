@@ -1,6 +1,6 @@
 ﻿using Terraria;
 using Terraria.ID;
-using Terraria.ModLoader;
+using Microsoft.Xna.Framework;
 
 namespace Promethium.Projectiles.Fireball
 {
@@ -11,7 +11,14 @@ namespace Promethium.Projectiles.Fireball
             base.SetDefaults();
             projectile.width = 30;
             projectile.height = 30;
-            projectile.penetrate = 4;
+            projectile.penetrate = 1;
+        }
+
+        public override void Kill(int timeLeft)
+        {
+            base.Kill(timeLeft);
+            if (Main.myPlayer == projectile.owner)
+                Projectile.NewProjectile(projectile.Center, Vector2.Zero, ProjectileID.InfernoFriendlyBlast, projectile.damage / 5, projectile.knockBack, projectile.owner);
         }
     }
 }

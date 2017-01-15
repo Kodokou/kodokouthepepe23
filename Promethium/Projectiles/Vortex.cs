@@ -33,19 +33,22 @@ namespace Promethium.Projectiles
             if (projectile.timeLeft > 270) projectile.alpha = 255 * (projectile.timeLeft - 270) / 30;
             else if (projectile.timeLeft < 30) projectile.alpha = 255 * (30 - projectile.timeLeft) / 30;
             else if (++projectile.ai[0] % 2 == 0)
-                for (int i = 0, j = 0; i < 200 && j < 7; ++i)
+            {
+                Vector2 pos = projectile.Center;
+                Utils.DustCircle(pos, projectile.timeLeft % 100, 123);
+                for (int i = 0, j = 0; i < Main.maxNPCs && j < 7; ++i)
                 {
                     NPC npc = Main.npc[i];
-                    if (npc.CanBeChasedBy(this))
+                    if (npc.CanBeChasedBy(projectile) && Collision.CanHitLine(pos, 1, 1, npc.position, npc.width, npc.height))
                     {
-                        Vector2 delta = projectile.Center - npc.Center;
+                        Vector2 delta = pos - npc.Center;
                         float dist = delta.LengthSquared();
                         if (dist <= VACCUM_DIST_SQ)
                         {
                             float mult = (1 - dist / VACCUM_DIST_SQ) * 5 * (1 + npc.knockBackResist);
                             if (npc.boss)
                             {
-                                mult /= 1.25F;
+                                mult /= 1.2F;
                                 npc.velocity *= 0.9F;
                             }
                             else npc.velocity *= 0.85F;
@@ -54,6 +57,7 @@ namespace Promethium.Projectiles
                         ++j;
                     }
                 }
+            }
         }
     }
 }

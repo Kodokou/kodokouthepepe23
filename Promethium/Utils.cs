@@ -1,4 +1,7 @@
 ﻿using Terraria;
+using Terraria.ID;
+using System;
+using Microsoft.Xna.Framework;
 
 namespace Promethium
 {
@@ -13,6 +16,11 @@ namespace Promethium
         public static bool IsSolid(Tile t, bool noTopOnly = false)
         {
             return t != null && t.nactive() && (Main.tileSolid[t.type] || (!noTopOnly && Main.tileSolidTop[t.type] && t.frameY == 0));
+        }
+
+        public static void DustCircle(Vector2 center, int angle, int radius)
+        {
+            Main.dust[Dust.NewDust(center + new Vector2(radius, 0).RotatedBy(Math.PI * angle / 50), 1, 1, DustID.Fire, 0, 0, 128)].noGravity = true;
         }
     }
 }

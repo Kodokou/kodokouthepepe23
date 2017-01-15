@@ -40,7 +40,7 @@ namespace Promethium.Projectiles
             if (Main.myPlayer == projectile.owner)
             {
                 int vortexId = mod.ProjectileType("Vortex");
-                for (int i = 0; i < 200; ++i)
+                for (int i = 0; i < Main.maxNPCs; ++i)
                 {
                     Projectile p = Main.projectile[i];
                     if (p.owner == projectile.owner && p.type == vortexId && p.timeLeft > 30) p.timeLeft = 30;

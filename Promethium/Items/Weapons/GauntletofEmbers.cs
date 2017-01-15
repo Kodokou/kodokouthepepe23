@@ -25,7 +25,7 @@ namespace Promethium.Items.Weapons
             item.noUseGraphic = true;
             item.toolTip = "'My hands feel like they are melting!'";
             item.shoot = mod.ProjectileType("GauntletofEmbers");
-            item.shootSpeed = 24;
+            item.shootSpeed = 18;
         }
     }
 }
