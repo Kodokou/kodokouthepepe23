@@ -44,7 +44,7 @@ namespace Promethium
         public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
         {
             int buffIndex = player.FindBuffIndex(mod.BuffType("ManaBuckler"));
-            if (player.statMana - damage >= 0 && manaBucklerLeft > 0)
+            if (player.statMana - damage * 2 >= 0 && manaBucklerLeft > 0)
             {
                 manaBucklerLeft--;
                 player.statMana -= damage * 2;
