@@ -1,3 +1,4 @@
 author = The CCM DevTeam
 version = 0.333
 displayName = Contra Corruptam Mundi
+noCompile = true
