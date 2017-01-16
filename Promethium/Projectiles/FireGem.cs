@@ -65,7 +65,7 @@ namespace Promethium.Projectiles
                             if (projectile.position.X + projectile.width - 4 > tilePos.X && projectile.position.X + 4 < tilePos.X + 16 && projectile.position.Y + projectile.height - 4 > tilePos.Y && projectile.position.Y + 4 < tilePos.Y + 16)
                             {
                                 projectile.velocity.X = 0;
-                                projectile.velocity.Y = -0.2f;
+                                projectile.velocity.Y = -0.2F;
                                 if (projectile.ai[0] == 0)
                                 {
                                     projectile.ai[0] = 1;
@@ -87,7 +87,7 @@ namespace Promethium.Projectiles
                         projectile.netUpdate = true;
                     }
                 }
-                projectile.velocity.Y = projectile.velocity.Y + 0.2f;
+                projectile.velocity.Y += 0.25F;
             }
             projectile.rotation += projectile.velocity.X / 40;
             if (projectile.ai[0] == 1)

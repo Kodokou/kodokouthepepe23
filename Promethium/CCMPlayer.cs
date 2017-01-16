@@ -44,7 +44,6 @@ namespace Promethium
 
         public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
         {
-            int diff = player.statLife - damage;
             if (damage > 1)
                 if (player.statMana > damage * 1.5F && manaBucklerLeft > 0)
                 {
@@ -57,7 +56,7 @@ namespace Promethium
                         int buff = player.FindBuffIndex(mod.BuffType("ManaBuckler"));
                         if (buff != -1) player.buffTime[buff] = 0;
                     }
-                    for (int i = 0; i < 20; ++i) Dust.NewDust(player.MountedCenter, player.width, player.height, DustID.Blood, 0, 0, 128, Color.LightBlue);
+                    for (int i = 0; i < 40; ++i) Dust.NewDust(player.MountedCenter + new Vector2(16 * player.direction, 4), player.width, player.height, DustID.Blood, 0, 0, 128, Color.LightBlue);
                 }
         }
 
@@ -92,12 +91,13 @@ namespace Promethium
             if (mplr.manaBucklerLeft > 0)
             {
                 Texture2D tex = mod.GetTexture("Items/Weapons/ManaBuckler");
-                Vector2 pos = plr.MountedCenter + Vector2.UnitX * 8 * plr.direction;
+                Vector2 pos = plr.MountedCenter + new Vector2(16 * plr.direction, 4);
                 float step = System.Math.Abs(mplr.time - 64) / 64F;
-                float scale = step * 0.2F + 0.9F;
+                float scale = step * 0.3F + 0.85F;
                 Color c = Lighting.GetColor((int)(pos.X / 16F), (int)(pos.Y / 16F)) * (step * 0.5F + 0.25F);
+                c.B = (byte)(c.B > 205 ? 255 : c.B + 50);
                 pos -= Main.screenPosition;
-                var data = new Terraria.DataStructures.DrawData(tex, pos, null, c, 0, tex.Size() / 2 * scale, scale, SpriteEffects.None, 0);
+                var data = new Terraria.DataStructures.DrawData(tex, pos, null, c, 0, tex.Size() / 2, scale, SpriteEffects.None, 0);
                 Main.playerDrawData.Add(data);
 
                 // TODO: Maybe some effects IDK, that's how you do them tho
