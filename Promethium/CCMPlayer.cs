@@ -65,22 +65,17 @@ namespace Promethium
             ModifyHitByNPC(null, ref damage, ref crit);
         }
 
-        public override void DrawEffects(PlayerDrawInfo drawInfo, ref float r, ref float g, ref float b, ref float a, ref bool fullBright)
-        {
-            if (player.HeldItem.type == mod.ItemType("GauntletofEmbers"))
-                drawInfo.drawHands = false;
-        }
-
         public override void ModifyDrawLayers(System.Collections.Generic.List<PlayerLayer> layers)
         {
+            if (player.HeldItem.type == mod.ItemType("GauntletofEmbers"))
+                PlayerLayer.Arms.visible = false;
             frontLayer.visible = true;
             layers.Add(frontLayer);
         }
 
         public override void PostUpdate()
         {
-            if (++time >= 128)
-                time = 0;
+            if (++time >= 128) time = 0;
         }
 
         public static readonly PlayerLayer frontLayer = new PlayerLayer("Promethium", "CCM Front Layer", PlayerLayer.MiscEffectsFront, drawInfo =>
