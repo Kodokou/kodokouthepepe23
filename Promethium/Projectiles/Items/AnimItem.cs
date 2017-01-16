@@ -9,6 +9,7 @@ namespace Promethium.Projectiles.Items
     public abstract class AnimItem : ModProjectile
     {
         private int frames, animSpeed;
+        public float rotShift = (float)Math.PI / 4;
 
         public sealed override void SetDefaults()
         {
@@ -77,7 +78,7 @@ namespace Promethium.Projectiles.Items
             projectile.position.X = rotRelPos.X - projectile.width / 2F;
             projectile.position.Y = rotRelPos.Y - projectile.height / 2F;
             CustomAI();
-            projectile.rotation = plr.itemRotation + (float)Math.PI / 4 * plr.direction;
+            projectile.rotation = plr.itemRotation + rotShift * plr.direction;
         }
     }
 }
