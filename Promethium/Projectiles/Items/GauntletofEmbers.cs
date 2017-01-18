@@ -10,6 +10,7 @@ namespace Promethium.Projectiles.Items
             projectile.name = "Gauntlet of Embers";
             frames = 1;
             animSpeed = 666;
+            frontDraw = true;
             projectile.width = 34;
             projectile.height = 34;
         }

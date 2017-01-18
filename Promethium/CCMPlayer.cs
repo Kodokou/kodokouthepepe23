@@ -67,8 +67,15 @@ namespace Promethium
 
         public override void ModifyDrawLayers(System.Collections.Generic.List<PlayerLayer> layers)
         {
-            if (player.HeldItem.type == mod.ItemType("GauntletofEmbers"))
-                PlayerLayer.Arms.visible = false;
+            if (player.heldProj != -1)
+            {
+                ModProjectile mp = Main.projectile[player.heldProj].modProjectile;
+                if (mp != null && mp is Projectiles.Items.AnimItem && ((Projectiles.Items.AnimItem)mp).frontDraw)
+                {
+                    layers.Remove(PlayerLayer.HeldProjBack);
+                    layers.Insert(layers.IndexOf(PlayerLayer.Arms) + 1, PlayerLayer.HeldProjBack);
+                }
+            }
             frontLayer.visible = true;
             layers.Add(frontLayer);
         }
@@ -78,7 +85,7 @@ namespace Promethium
             if (++time >= 128) time = 0;
         }
 
-        public static readonly PlayerLayer frontLayer = new PlayerLayer("Promethium", "CCM Front Layer", PlayerLayer.MiscEffectsFront, drawInfo =>
+        public static readonly PlayerLayer frontLayer = new PlayerLayer("Promethium", "CCM Front Layer", drawInfo =>
         {
             Mod mod = ModLoader.GetMod("Promethium");
             Player plr = drawInfo.drawPlayer;
