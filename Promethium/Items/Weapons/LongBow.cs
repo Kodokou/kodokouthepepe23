@@ -10,10 +10,10 @@ namespace Promethium.Items.Weapons
     {
         public override void SetDefaults()
         {
-            item.name = "Long Bow";
+            item.name = "Yumi";
             item.width = 20;
             item.height = 58;
-            item.damage = 32;
+            item.damage = 40;
             item.knockBack = 3;
             item.channel = true;
             item.ranged = true;
@@ -25,7 +25,7 @@ namespace Promethium.Items.Weapons
             item.rare = 5;
             item.noMelee = true;
             item.noUseGraphic = true;
-            item.toolTip = "";
+            item.toolTip = "With enough concentration gets even stronger";
             item.shoot = mod.ProjectileType<Projectiles.Items.LongBow>();
             item.shootSpeed = 7;
         }

@@ -20,6 +20,15 @@ namespace Promethium.Projectiles.Items
         public override void CustomAI()
         {
             UpdateRotation();
+            if (Main.myPlayer == projectile.owner)
+            {
+                Player plr = Main.player[projectile.owner];
+                if (!plr.mount.Active)
+                {
+                    plr.velocity.X *= 0.9F;
+                    if (plr.velocity.Y < 0) plr.velocity.Y *= 0.9F;
+                }
+            }
         }
 
         public override void Animate()
@@ -45,9 +54,9 @@ namespace Promethium.Projectiles.Items
                 Main.player[projectile.owner].PickAmmo(it, ref shoot, ref speed, ref canShot, ref projectile.damage, ref projectile.knockBack);
                 if (projectile.frame > 4)
                 {
-                    speed = speed * 4 / 3;
-                    projectile.damage = projectile.damage * 4 / 3;
+                    speed = speed * 5 / 4;
                     projectile.knockBack = projectile.knockBack * 4 / 3;
+                    projectile.damage = projectile.damage * 3 / 2;
                 }
                 if (canShot) ShootProjectile(shoot, speed, SoundID.Item5);
             }
