@@ -28,7 +28,7 @@ namespace Promethium.Projectiles.Items
             {
                 plr.manaRegenDelay = (int)plr.maxRegenDelay;
                 UpdateRotation();
-                ShootProjectile("LightningStrike", 6, SoundID.Item20);
+                ShootProjectile(mod.ProjectileType<LightningStrike>(), 6, SoundID.Item20);
             }
             else if (projectile.ai[0] == 10)
             {

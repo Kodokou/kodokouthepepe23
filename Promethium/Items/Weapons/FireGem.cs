@@ -12,7 +12,7 @@ namespace Promethium.Items.Weapons
             item.width = 30;
             item.height = 34;
             item.toolTip = "Magical gems that explode when enemies get close to them";
-            item.shoot = mod.ProjectileType("FireGem");
+            item.shoot = mod.ProjectileType<Projectiles.FireGem>();
             item.shootSpeed = 15;
             item.summon = true;
             item.useStyle = 1;

@@ -25,7 +25,7 @@ namespace Promethium.Items.Weapons
             item.rare = 8;
             item.noUseGraphic = true;
             item.channel = true;
-            item.shoot = mod.ProjectileType("FingerofZeus");
+            item.shoot = mod.ProjectileType<Projectiles.Items.FingerofZeus>();
             item.shootSpeed = 40;
         }
 

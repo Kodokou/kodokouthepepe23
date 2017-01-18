@@ -22,5 +22,17 @@ namespace Promethium
         {
             Main.dust[Dust.NewDust(center + new Vector2(radius, 0).RotatedBy(Math.PI * angle / 50), 1, 1, DustID.Fire, 0, 0, 128)].noGravity = true;
         }
+
+        public static void RegenEffect(Entity en)
+        {
+            Main.PlaySound(25, -1, -1, 1, 1, 0);
+            for (int i = 0; i < 7; ++i)
+            {
+                int d = Dust.NewDust(en.position, en.width, en.height, 45, 0, 0, 255, default(Color), Main.rand.Next(20, 26) / 10F);
+                Main.dust[d].noLight = true;
+                Main.dust[d].noGravity = true;
+                Main.dust[d].velocity /= 2;
+            }
+        }
     }
 }

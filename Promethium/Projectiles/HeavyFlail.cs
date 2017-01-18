@@ -10,7 +10,7 @@ namespace Promethium.Projectiles
     {
         public override void SetDefaults()
         {
-            projectile.name = "HeavyFlail";
+            projectile.name = "Heavy Flail";
             projectile.width = 40;
             projectile.height = 40;
             projectile.aiStyle = 15;

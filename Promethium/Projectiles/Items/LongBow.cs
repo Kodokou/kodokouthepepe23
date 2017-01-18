@@ -14,42 +14,44 @@ namespace Promethium.Projectiles.Items
             animSpeed = 20;
             projectile.width = 30;
             projectile.height = 78;
+            rotShift = 0;
         }
 
         public override void CustomAI()
         {
             UpdateRotation();
-            Player plr = Main.player[projectile.owner];
-            Item ammoSlot = null;
-            int speed = (int)Math.Floor(projectile.frame / 2f) + 1; //change this var name maybe?
-            for (int i = 0; i < 58; i++)
-            {
-                if (plr.inventory[i].ammo == AmmoID.Arrow && plr.inventory[i].stack > 0 && plr.inventory[i].type != mod.ItemType("LongBow"))
-                {
-                    ammoSlot = plr.inventory[i];
-                    break;
-                }
-            }
-            if (plr.releaseUseItem /*&& projectile.frame > 3*/)
-            {
-                projectile.damage *= projectile.frame > 3 ? 4 : speed;
-                ShootProjectile(ammoSlot.shoot, speed * 2, SoundID.Item5);
-                ammoSlot.stack -= ammoSlot.consumable ? 1 : 0;
-            }
-            plr.itemRotation -= plr.direction * MathHelper.PiOver4;
         }
 
-        public override void Animate(int speed)
+        public override void Animate()
         {
-            int mod = speed;
-            if (projectile.frame > 3)
-                mod -= 15;
+            int mod = animSpeed;
+            if (projectile.frame > 3) mod += 100;
             if (++projectile.frameCounter >= mod)
             {
                 projectile.frameCounter = 0;
-                if (++projectile.frame == 6)
-                    projectile.frame = 4;
+                if (projectile.frame < 5 && ++projectile.frame > 3)
+                    Utils.RegenEffect(Main.player[projectile.owner]);
             }
+        }
+
+        public override void Action()
+        {
+            if (projectile.frame > 3)
+            {
+                Item it = new Item() { type = mod.ItemType<Promethium.Items.Weapons.LongBow>(), useAmmo = AmmoID.Arrow };
+                int shoot = ProjectileID.WoodenArrowFriendly;
+                float speed = 9;
+                bool canShot = false;
+                Main.player[projectile.owner].PickAmmo(it, ref shoot, ref speed, ref canShot, ref projectile.damage, ref projectile.knockBack);
+                if (projectile.frame > 4)
+                {
+                    speed = speed * 4 / 3;
+                    projectile.damage = projectile.damage * 4 / 3;
+                    projectile.knockBack = projectile.knockBack * 4 / 3;
+                }
+                if (canShot) ShootProjectile(shoot, speed, SoundID.Item5);
+            }
+            projectile.frame = 0;
         }
     }
 }

@@ -35,7 +35,7 @@ namespace Promethium.Projectiles
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {
                     Projectile p = Main.projectile[i];
-                    if (p.active && p.type == mod.ProjectileType("FireGem") && p.owner == projectile.owner)
+                    if (p.active && p.type == mod.ProjectileType<Projectiles.FireGem>() && p.owner == projectile.owner)
                     {
                         if (p.timeLeft < shortestTimeLeft)
                         {

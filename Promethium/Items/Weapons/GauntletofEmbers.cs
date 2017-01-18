@@ -15,17 +15,16 @@ namespace Promethium.Items.Weapons
             item.channel = true;
             item.magic = true;
             item.mana = 15;
-            item.useTime = 20;
-            item.useAnimation = 30;
-            item.reuseDelay = 15;
+            item.useTime = 10;
+            item.useAnimation = 20;
             item.useStyle = 5;
             item.value = Item.buyPrice(0, 2);
             item.rare = 5;
             item.noMelee = true;
             item.noUseGraphic = true;
             item.toolTip = "'My hands feel like they are melting!'";
-            item.shoot = mod.ProjectileType("GauntletofEmbers");
-            item.shootSpeed = 18;
+            item.shoot = mod.ProjectileType<Projectiles.Items.GauntletofEmbers>();
+            item.shootSpeed = 14;
         }
     }
 }

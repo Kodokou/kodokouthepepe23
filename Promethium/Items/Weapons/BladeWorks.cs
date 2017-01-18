@@ -56,7 +56,7 @@ namespace Promethium.Items.Weapons
                     speed.Y += Main.rand.Next(-40, 41) * 0.0125F;
                     Item temp = new Item();
                     temp.SetDefaults(GetItemID());
-                    Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType("BladeProjection"), plr.GetWeaponDamage(temp) * item.damage / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, temp.type);
+                    Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType<Projectiles.BladeProjection>(), plr.GetWeaponDamage(temp) * item.damage / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, temp.type);
                 }
             }
             return true;

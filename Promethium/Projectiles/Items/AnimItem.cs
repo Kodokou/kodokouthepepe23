@@ -8,8 +8,8 @@ namespace Promethium.Projectiles.Items
 {
     public abstract class AnimItem : ModProjectile
     {
-        private int frames, animSpeed;
-        public float rotShift = (float)Math.PI / 4;
+        public int frames, animSpeed;
+        public float rotShift = MathHelper.PiOver4;
         public bool frontDraw = false;
 
         public sealed override void SetDefaults()
@@ -22,17 +22,13 @@ namespace Promethium.Projectiles.Items
             Main.projFrames[projectile.type] = frames;
         }
 
+        public override bool CanDamage() { return false; }
+
         public abstract void SetDefaults(ref int frames, ref int animSpeed);
 
-        public virtual void CustomAI() { }
+        public virtual void Action() { }
 
-        public void ShootProjectile(string name, float speed, Terraria.Audio.LegacySoundStyle sound = null)
-        {
-            Vector2 v = projectile.Center;
-            if (sound != null) Main.PlaySound(sound, v);
-            if (Main.myPlayer == projectile.owner)
-                Projectile.NewProjectile(v, Vector2.Normalize(projectile.velocity) * speed, mod.ProjectileType(name), projectile.damage, projectile.knockBack, projectile.owner);
-        }
+        public virtual void CustomAI() { }
 
         public void ShootProjectile(int id, float speed, Terraria.Audio.LegacySoundStyle sound = null)
         {
@@ -42,9 +38,9 @@ namespace Promethium.Projectiles.Items
                 Projectile.NewProjectile(v, Vector2.Normalize(projectile.velocity) * speed, id, projectile.damage, projectile.knockBack, projectile.owner);
         }
 
-        public virtual void Animate(int speed)
+        public virtual void Animate()
         {
-            if (++projectile.frameCounter >= speed)
+            if (++projectile.frameCounter >= animSpeed)
             {
                 projectile.frameCounter = 0;
                 if (++projectile.frame >= frames) projectile.frame = 0;
@@ -80,18 +76,28 @@ namespace Promethium.Projectiles.Items
             plr.itemRotation = rot.ToRotation();
         }
 
+        public sealed override void Kill(int timeLeft) { }
+
         public sealed override void AI()
         {
-            Animate(animSpeed);
+            Animate();
             Player plr = Main.player[projectile.owner];
             Vector2 rotRelPos = plr.RotatedRelativePoint(plr.MountedCenter);
-            if (Main.myPlayer == projectile.owner && !plr.channel) projectile.Kill();
             plr.heldProj = projectile.whoAmI;
             plr.itemTime = 2;
             plr.itemAnimation = 2;
             projectile.position.X = rotRelPos.X - projectile.width / 2F;
             projectile.position.Y = rotRelPos.Y - projectile.height / 2F;
-            CustomAI();
+            if (projectile.localAI[1] > 0)
+            {
+                if (++projectile.localAI[1] > 15) projectile.Kill();
+            }
+            else if (Main.myPlayer == projectile.owner && !plr.channel)
+            {
+                projectile.localAI[1] = 1;
+                Action();
+            }
+            else CustomAI();
             projectile.rotation = plr.itemRotation + rotShift * plr.direction;
         }
     }

@@ -19,7 +19,7 @@ namespace Promethium.Items.Weapons
             item.height = 38;
             item.damage = 20;
             item.noUseGraphic = true;
-            item.shoot = mod.ProjectileType("HeavyFlail");
+            item.shoot = mod.ProjectileType<Projectiles.HeavyFlail>();
             item.shootSpeed = 9;
             item.UseSound = SoundID.Item1;
             item.rare = 2;

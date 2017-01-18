@@ -30,22 +30,20 @@ namespace Promethium.Projectiles.Items
                 if (plr.CheckMana(15, true))
                 {
                     projectile.damage *= 2;
-                    for (int i = 0; i < 30; ++i)
-                        Dust.NewDust(projectile.position, projectile.width, projectile.height, ProjectileID.Fireball);
-                    Main.PlaySound(SoundID.Item13, projectile.Center);
+                    Utils.RegenEffect(plr);
                 }
                 else projectile.ai[0] -= 40;
                 plr.manaRegenDelay = (int)plr.maxRegenDelay;
             }
         }
 
-        public override void Kill(int timeLeft)
+        public override void Action()
         {
             string proj = "Fireball";
             if (projectile.ai[0] >= 80) proj += "Large";
             else if (projectile.ai[0] >= 40) proj += "Med";
             else proj += "Small"; 
-            ShootProjectile(proj, 12, SoundID.Item20);
+            ShootProjectile(mod.ProjectileType(proj), 12, SoundID.Item20);
         }
     }
 }

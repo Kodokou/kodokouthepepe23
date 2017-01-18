@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.IO;
 
-namespace Promethium
+namespace Promethium.Projectiles
 {
     public class BladeProjection : ModProjectile
     {

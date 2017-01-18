@@ -12,7 +12,7 @@ namespace Promethium.Items.Weapons
             item.width = 32;
             item.height = 32;
 			item.toolTip = "Spawns a vortex that draws in nearby enemies";
-			item.shoot = mod.ProjectileType("VoidOrb");
+			item.shoot = mod.ProjectileType<Projectiles.VoidOrb>();
 			item.shootSpeed = 5;
 			item.summon = true;
 			item.useStyle = 1;
