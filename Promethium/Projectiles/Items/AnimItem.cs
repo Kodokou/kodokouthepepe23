@@ -10,7 +10,7 @@ namespace Promethium.Projectiles.Items
     {
         private int frames, animSpeed;
         public float rotShift = (float)Math.PI / 4;
-        public bool frontDraw = false;
+        public bool frontDraw = true;
 
         public sealed override void SetDefaults()
         {
@@ -32,6 +32,23 @@ namespace Promethium.Projectiles.Items
             if (sound != null) Main.PlaySound(sound, v);
             if (Main.myPlayer == projectile.owner)
                 Projectile.NewProjectile(v, Vector2.Normalize(projectile.velocity) * speed, mod.ProjectileType(name), projectile.damage, projectile.knockBack, projectile.owner);
+        }
+
+        public void ShootProjectile(int id, float speed, Terraria.Audio.LegacySoundStyle sound = null)
+        {
+            Vector2 v = projectile.Center;
+            if (sound != null) Main.PlaySound(sound, v);
+            if (Main.myPlayer == projectile.owner)
+                Projectile.NewProjectile(v, Vector2.Normalize(projectile.velocity) * speed, id, projectile.damage, projectile.knockBack, projectile.owner);
+        }
+
+        public virtual void Animate(int speed)
+        {
+            if (++projectile.frameCounter >= speed)
+            {
+                projectile.frameCounter = 0;
+                if (++projectile.frame >= frames) projectile.frame = 0;
+            }
         }
 
         public void UpdateRotation()
@@ -65,11 +82,7 @@ namespace Promethium.Projectiles.Items
 
         public sealed override void AI()
         {
-            if (++projectile.frameCounter >= animSpeed)
-            {
-                projectile.frameCounter = 0;
-                if (++projectile.frame >= frames) projectile.frame = 0;
-            }
+            Animate(animSpeed);
             Player plr = Main.player[projectile.owner];
             Vector2 rotRelPos = plr.RotatedRelativePoint(plr.MountedCenter);
             if (Main.myPlayer == projectile.owner && !plr.channel) projectile.Kill();
