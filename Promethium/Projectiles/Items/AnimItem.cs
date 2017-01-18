@@ -10,7 +10,7 @@ namespace Promethium.Projectiles.Items
     {
         private int frames, animSpeed;
         public float rotShift = (float)Math.PI / 4;
-        public bool frontDraw = true;
+        public bool frontDraw = false;
 
         public sealed override void SetDefaults()
         {

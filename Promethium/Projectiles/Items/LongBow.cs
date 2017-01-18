@@ -30,11 +30,6 @@ namespace Promethium.Projectiles.Items
                     break;
                 }
             }
-            if (ammoSlot == null)
-            {
-                projectile.Kill();
-                return;
-            }
             if (plr.releaseUseItem /*&& projectile.frame > 3*/)
             {
                 projectile.damage *= projectile.frame > 3 ? 4 : speed;
