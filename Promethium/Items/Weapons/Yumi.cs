@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework;
 
 namespace Promethium.Items.Weapons
 {
-    public class LongBow : ModItem
+    public class Yumi : ModItem
     {
         public override void SetDefaults()
         {
@@ -26,7 +26,7 @@ namespace Promethium.Items.Weapons
             item.noMelee = true;
             item.noUseGraphic = true;
             item.toolTip = "With enough concentration gets even stronger";
-            item.shoot = mod.ProjectileType<Projectiles.Items.LongBow>();
+            item.shoot = mod.ProjectileType<Projectiles.Items.Yumi>();
             item.shootSpeed = 7;
         }
 

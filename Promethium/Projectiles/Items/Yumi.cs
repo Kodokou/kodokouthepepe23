@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace Promethium.Projectiles.Items
 {
-    public class LongBow : AnimItem
+    public class Yumi : AnimItem
     {
         public override void SetDefaults(ref int frames, ref int animSpeed)
         {
@@ -53,7 +53,7 @@ namespace Promethium.Projectiles.Items
         {
             if (projectile.frame > 3)
             {
-                Item it = new Item() { type = mod.ItemType<Promethium.Items.Weapons.LongBow>(), useAmmo = AmmoID.Arrow };
+                Item it = new Item() { type = mod.ItemType<Promethium.Items.Weapons.Yumi>(), useAmmo = AmmoID.Arrow };
                 int shoot = ProjectileID.WoodenArrowFriendly;
                 float speed = 14;
                 bool canShot = false;
