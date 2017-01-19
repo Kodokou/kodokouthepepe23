@@ -25,12 +25,14 @@ namespace Promethium.Projectiles.Fireball
                 projectile.localAI[0] = 1;
                 projectile.rotation = projectile.velocity.ToRotation() + (float)System.Math.PI / 4;
             }
+            Lighting.AddLight(projectile.position, 0.75F, 0.25F, 0.25F);
             if (Main.rand.Next(2) == 0)
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, ProjectileID.Fireball, projectile.velocity.X / 2, projectile.velocity.Y / 2);
         }
 
         public override void Kill(int timeLeft)
         {
+            Main.PlaySound(SoundID.Item20, projectile.position);
             for (int i = 0; i < projectile.damage; ++i)
                 Dust.NewDust(projectile.position, projectile.width, projectile.height, ProjectileID.Fireball, projectile.velocity.X / 2, projectile.velocity.Y / 2);
         }

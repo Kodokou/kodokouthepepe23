@@ -14,12 +14,12 @@ namespace Promethium.Items.Weapons
             item.width = 20;
             item.height = 58;
             item.damage = 50;
-            item.knockBack = 3;
+            item.knockBack = 6;
             item.channel = true;
             item.ranged = true;
             item.useAmmo = AmmoID.Arrow;
-            item.useTime = 10;
-            item.useAnimation = 20;
+            item.useTime = 40;
+            item.useAnimation = 40;
             item.useStyle = 5;
             item.value = Item.buyPrice(0, 2);
             item.rare = 5;

@@ -1,5 +1,6 @@
 ﻿using Terraria;
 using Terraria.ID;
+using Microsoft.Xna.Framework;
 
 namespace Promethium.Projectiles.Items
 {
@@ -34,6 +35,14 @@ namespace Promethium.Projectiles.Items
                 }
                 else projectile.ai[0] -= 40;
                 plr.manaRegenDelay = (int)plr.maxRegenDelay;
+            }
+            if (projectile.frameCounter % 3 == 0)
+            {
+                float charge = projectile.ai[0] * 16 / 40;
+                Vector2 v = Main.rand.NextVector2CircularEdge(charge, charge);
+                Dust d = Main.dust[Dust.NewDust(Main.player[projectile.owner].MountedCenter + projectile.velocity + v, 1, 1, 127, -v.X / 2, -v.Y / 2, 96, default(Color), 1.25F)];
+                d.noGravity = true;
+                d.noLight = true;
             }
         }
 

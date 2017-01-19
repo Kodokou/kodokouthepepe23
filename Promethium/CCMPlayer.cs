@@ -43,27 +43,40 @@ namespace Promethium
             //    if (time >= 60) player.MinionRestTargetPoint = Vector2.Zero;
         }
 
-        public override void ModifyHitByNPC(NPC npc, ref int damage, ref bool crit)
+        public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
         {
-            if (damage > 1)
-                if (player.statMana > damage * 1.5F && manaBucklerLeft > 0)
+            if (manaBucklerLeft > 0)
+            {
+                int dmg = (int)(Main.CalculatePlayerDamage(damage, player.statDefense) * 1.5F);
+                if (player.CheckMana(dmg, true, true))
                 {
-                    player.statMana -= (int)(damage * 1.5F);
                     player.manaRegenDelay = (int)player.maxRegenDelay;
-                    damage = 0;
-                    crit = false;
                     if (--manaBucklerLeft < 1)
                     {
                         int buff = player.FindBuffIndex(mod.BuffType<Buffs.ManaBuckler>());
                         if (buff != -1) player.buffTime[buff] = 0;
                     }
-                    for (int i = 0; i < 40; ++i) Dust.NewDust(player.MountedCenter + new Vector2(16 * player.direction, 4), player.width, player.height, DustID.Blood, 0, 0, 128, Color.LightBlue);
+                    player.immune = true;
+                    if (pvp) player.immuneTime = 8;
+                    else
+                    {
+                        player.immuneTime = 20;
+                        if (dmg > 1) player.immuneTime *= 2;
+                        if (player.longInvince) player.immuneTime *= 2;
+                    }
+                    Main.PlaySound(SoundID.Item27, player.position);
+                    double maxDust = dmg / player.statManaMax2 * 100;
+                    int i = 0;
+                    while (i++ < maxDust) Dust.NewDust(player.position, player.width, player.height, 5, hitDirection * 2, -2, 0, Color.Blue);
+                    if (!player.noKnockback && hitDirection != 0 && (!player.mount.Active || !player.mount.Cart))
+                    {
+                        player.velocity.X = 4.5f * hitDirection;
+                        player.velocity.Y = -3.5f;
+                    }
+                    return false;
                 }
-        }
-
-        public override void ModifyHitByProjectile(Projectile proj, ref int damage, ref bool crit)
-        {
-            ModifyHitByNPC(null, ref damage, ref crit);
+            }
+            return true;
         }
 
         public override void ModifyDrawLayers(System.Collections.Generic.List<PlayerLayer> layers)

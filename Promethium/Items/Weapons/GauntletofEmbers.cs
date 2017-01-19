@@ -15,7 +15,7 @@ namespace Promethium.Items.Weapons
             item.channel = true;
             item.magic = true;
             item.mana = 15;
-            item.useTime = 10;
+            item.useTime = 20;
             item.useAnimation = 20;
             item.useStyle = 5;
             item.value = Item.buyPrice(0, 2);

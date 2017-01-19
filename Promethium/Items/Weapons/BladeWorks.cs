@@ -11,7 +11,7 @@ namespace Promethium.Items.Weapons
     {
         public override void SetDefaults()
         {
-            item.damage = 1050;
+            item.damage = 1000;
             item.name = "Blade Works";
             item.width = 30;
             item.height = 34;
@@ -59,6 +59,9 @@ namespace Promethium.Items.Weapons
                     Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType<Projectiles.BladeProjection>(), plr.GetWeaponDamage(temp) * plr.GetWeaponDamage(item) / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, temp.type);
                 }
             }
+            Vector2 pos = plr.MountedCenter + new Vector2(plr.direction * 16, -16);
+            for (int i = 0; i < 4; ++i)
+                Dust.NewDust(pos, item.width, item.height, 204, 0, 0, 128, default(Color), 1.2F);
             return true;
         }
 
@@ -68,13 +71,16 @@ namespace Promethium.Items.Weapons
             if (i == 125) return ItemID.Excalibur;
             else i /= 5;
             if (i == 24) return ItemID.EnchantedSword;
-            else i %= 6;
-            if (i == 0) return ItemID.LeadBroadsword;
-            else if (i == 1) return ItemID.SilverBroadsword;
-            else if (i == 2) return ItemID.GoldBroadsword;
-            else if (i == 3) return ItemID.PlatinumBroadsword;
-            else if (i == 4) return ItemID.TungstenBroadsword;
-            else return ItemID.PearlwoodSword;
+            else if (i == 23) return ItemID.IceBlade;
+            else if (i == 22) return ItemID.Starfury;
+            else if (i == 21) return ItemID.Katana;
+            else if (i == 20) return ItemID.BoneSword;
+            else i %= 5;
+            if (i == 0) return ItemID.SilverBroadsword;
+            else if (i == 1) return ItemID.GoldBroadsword;
+            else if (i == 2) return ItemID.PlatinumBroadsword;
+            else if (i == 3) return ItemID.TungstenBroadsword;
+            else return ItemID.LeadBroadsword;
         }
     }
 }
