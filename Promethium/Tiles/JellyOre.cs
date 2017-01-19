@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace Promethium.Tiles
 {
-    public class PromethiumOre : ModTile
+    public class JellyOre : ModTile
     {
         public override void SetDefaults()
         {
@@ -14,8 +14,8 @@ namespace Promethium.Tiles
             Main.tileLighted[Type] = false;
             soundType = 27;
             soundStyle = 2;
-            drop = mod.ItemType("PromethiumOre");
-            AddMapEntry(new Color(142, 217, 63));
+            drop = mod.ItemType<Items.Placeables.JellyOre>();
+            //AddMapEntry(new Color(142, 217, 63));
         }
 
         public override bool KillSound(int i, int j)

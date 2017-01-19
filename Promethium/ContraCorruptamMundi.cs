@@ -6,10 +6,7 @@ namespace Promethium
 	{
 		public ContraCorruptamMundi()
 		{
-			Properties = new ModProperties()
-			{
-				Autoload = true
-			};
+            Properties = new ModProperties() { Autoload = true };
 		}
-	}
+    }
 }

@@ -11,7 +11,7 @@ namespace Promethium.Items.Weapons
     {
         public override void SetDefaults()
         {
-            item.damage = 1000;
+            item.damage = 1050;
             item.name = "Blade Works";
             item.width = 30;
             item.height = 34;
@@ -56,7 +56,7 @@ namespace Promethium.Items.Weapons
                     speed.Y += Main.rand.Next(-40, 41) * 0.0125F;
                     Item temp = new Item();
                     temp.SetDefaults(GetItemID());
-                    Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType<Projectiles.BladeProjection>(), plr.GetWeaponDamage(temp) * item.damage / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, temp.type);
+                    Projectile.NewProjectile(spawnPos, speed, mod.ProjectileType<Projectiles.BladeProjection>(), plr.GetWeaponDamage(temp) * plr.GetWeaponDamage(item) / 1000, plr.GetWeaponKnockback(temp, temp.knockBack), plr.whoAmI, temp.type);
                 }
             }
             return true;

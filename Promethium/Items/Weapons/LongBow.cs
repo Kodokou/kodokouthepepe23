@@ -13,7 +13,7 @@ namespace Promethium.Items.Weapons
             item.name = "Yumi";
             item.width = 20;
             item.height = 58;
-            item.damage = 40;
+            item.damage = 50;
             item.knockBack = 3;
             item.channel = true;
             item.ranged = true;
