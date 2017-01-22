@@ -1,4 +1,5 @@
-﻿using Terraria.DataStructures;
+﻿using System;
+using Terraria.DataStructures;
 using Terraria.ModLoader;
 using Terraria.ID;
 using Terraria;
@@ -10,7 +11,8 @@ namespace Promethium
     class CCMPlayer : ModPlayer
     {
         private const byte KEY_DOWN = 0, KEY_UP = 1, KEY_RIGHT = 2, KEY_LEFT = 3;
-        public int manaBucklerLeft = 0, time = 0;
+        public int manaBucklerLeft = 0, time = 0, statNecro = 0, nonResetTime = 0;
+        public bool inFront = false, inBack = false;
 
         public override void SetControls()
         {
@@ -83,34 +85,37 @@ namespace Promethium
         {
             frontLayer.visible = true;
             layers.Add(frontLayer);
+            backLayer.visible = true;
+            layers.Insert(0, backLayer);
         }
 
         public override void PostUpdate()
         {
-            if (++time >= 128) time = 0;
+            ++nonResetTime;
+            if (++time >= 256) time = 0;
         }
 
         public static readonly PlayerLayer frontLayer = new PlayerLayer("Promethium", "CCM Front Layer", drawInfo =>
         {
-            Mod mod = ModLoader.GetMod("Promethium");
-            Player plr = drawInfo.drawPlayer;
-            CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(mod);
-            if (mplr.manaBucklerLeft > 0)
-            {
-                Texture2D tex = mod.GetTexture("Items/Weapons/ManaBuckler");
-                Vector2 pos = plr.MountedCenter + new Vector2(16 * plr.direction, 4);
-                float step = System.Math.Abs(mplr.time - 64) / 64F;
-                float scale = step * 0.3F + 0.85F;
-                Color c = Lighting.GetColor((int)(pos.X / 16F), (int)(pos.Y / 16F)) * (step * 0.5F + 0.25F);
-                c.B = (byte)(c.B > 205 ? 255 : c.B + 50);
-                pos -= Main.screenPosition;
-                DrawData data = new DrawData(tex, pos, null, c, 0, tex.Size() / 2, scale, SpriteEffects.None, 0);
-                Main.playerDrawData.Add(data);
+                Mod mod = ModLoader.GetMod("Promethium");
+                Player plr = drawInfo.drawPlayer;
+                CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(mod);
+                if (mplr.manaBucklerLeft > 0)
+                {
+                    Texture2D tex = mod.GetTexture("Items/Weapons/ManaBuckler");
+                    Vector2 pos = plr.MountedCenter + new Vector2(16 * plr.direction, 4);
+                    float step = System.Math.Abs((mplr.time % 128) - 64) / 64F;
+                    float scale = step * 0.3F + 0.85F;
+                    Color c = Lighting.GetColor((int)(pos.X / 16F), (int)(pos.Y / 16F)) * (step * 0.5F + 0.25F);
+                    c.B = (byte)(c.B > 205 ? 255 : c.B + 50);
+                    pos -= Main.screenPosition;
+                    DrawData data = new DrawData(tex, pos, null, c, 0, tex.Size() / 2, scale, SpriteEffects.None, 0);
+                    Main.playerDrawData.Add(data);
 
-                // TODO: Maybe some effects IDK, that's how you do them tho
-                //int dust = Dust.NewDust();
-                //Main.playerDrawDust.Add(dust); // Important apparently
-            }
+                    // TODO: Maybe some effects IDK, that's how you do them tho
+                    //int dust = Dust.NewDust();
+                    //Main.playerDrawDust.Add(dust); // Important apparently
+                }
             
             /* Custom pseudo-accessory drawing test
             if (plr.HeldItem != null)
@@ -124,6 +129,37 @@ namespace Promethium
                 Main.playerDrawData.Add(drawData);
             }
             */
+
+                DrawBones(plr, -1);
         });
+
+        public static readonly PlayerLayer backLayer = new PlayerLayer("Promethium", "CCM Back Layer", drawInfo =>
+            {
+                DrawBones(drawInfo.drawPlayer, 1);
+            });
+
+        private static void DrawBones(Player plr, int sideMult)
+        {
+            CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(ModLoader.GetMod("Promethium"));
+            if (mplr.statNecro > 0)
+            {
+                int maxI = mplr.statNecro / 5;
+                Texture2D tex = Main.itemTexture[ItemID.Bone];
+                for (int i = maxI; i > 0; --i)
+                {
+                    float normTime = MathHelper.Pi * (128 - mplr.nonResetTime % 256) / 64 + i * MathHelper.TwoPi / maxI; //-2pi -> 2pi
+                    float lside = ((normTime + MathHelper.Pi - MathHelper.PiOver2 * sideMult) % MathHelper.TwoPi);
+                    float rside = MathHelper.Pi;
+                    if (lside <= rside)
+                    {
+                        Vector2 pos = plr.MountedCenter - Main.screenPosition;
+                        pos += Vector2.UnitX * 64 * sideMult; // FOR TESTING
+                        pos += new Vector2((float)Math.Sin(normTime) * plr.width * 3 / 2, (float)Math.Cos(normTime / 2) * plr.height * 2 / 3);
+                        DrawData data = new DrawData(tex, pos, null, Color.White, normTime, tex.Size() / 2, 1, SpriteEffects.None, 0);
+                        Main.playerDrawData.Add(data);
+                    }
+                }
+            }
+        }
     }
 }
