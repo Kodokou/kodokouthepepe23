@@ -46,7 +46,7 @@ namespace Promethium.Items.Weapons
                     if (diff.LengthSquared() <= 180 * 180)
                     {
                         Utils.NetStrikeNPC(n, plr.GetWeaponDamage(item), plr.GetWeaponKnockback(item, item.knockBack), -Math.Sign(diff.X));
-                        if (!n.boss) n.AddBuff(mod.BuffType("Stun"), 150);
+                        if (!n.boss && Main.rand.Next(4) != 0) n.AddBuff(mod.BuffType("Stun"), 150);
                     }
                 }
             }

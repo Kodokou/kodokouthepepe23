@@ -6,7 +6,7 @@ namespace Promethium.Items.Placeables
     {
         public override void SetDefaults()
         {
-            item.name = "Promethium Ore";
+            item.name = "Jelly Ore";
             item.width = 12;
             item.height = 12;
             item.maxStack = 999;

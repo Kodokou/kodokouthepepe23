@@ -11,15 +11,15 @@ namespace Promethium.Projectiles
     public class BladeProjection : ModProjectile
     {
         int item = 0, iW = 16, iH = 16;
-        float length = 40;
+        int length = 40;
 
         public override void SetDefaults()
         {
             projectile.name = "Blade Projection";
-            projectile.width = 24; 
-            projectile.height = 24;
+            projectile.width = 8; 
+            projectile.height = 8;
             projectile.tileCollide = false;
-            projectile.timeLeft = 260;
+            projectile.timeLeft = 210;
             projectile.friendly = true;
             projectile.magic = true;
         }
@@ -37,21 +37,19 @@ namespace Promethium.Projectiles
                 projectile.localAI[1] = 1;
                 projectile.rotation = (float)Math.Atan2(projectile.velocity.Y, projectile.velocity.X);
                 projectile.velocity /= 10;
-                projectile.netUpdate = true;
                 item = (int)projectile.ai[0];
                 Item temp = new Item();
                 temp.SetDefaults(item);
                 iW = temp.width;
                 iH = temp.height;
-                length = (float)Math.Sqrt(iW * iW + iH * iH);
+                length = (int)Math.Sqrt(iW * iW + iH * iH);
                 if (item == ItemID.IceBlade) projectile.coldDamage = true;
                 SpawnEffect();
             }
-            else if (projectile.timeLeft == 235 && projectile.localAI[1] == 1)
+            else if (projectile.timeLeft == 185 && projectile.localAI[1] == 1)
             {
                 projectile.velocity *= 10;
                 projectile.localAI[1] = 2;
-                projectile.netUpdate = true;
             }
             if (projectile.ai[1] == 0 && !Collision.SolidCollision(projectile.position, projectile.width, projectile.height))
             {
@@ -75,7 +73,10 @@ namespace Promethium.Projectiles
             {
                 projectile.light = 0.9f;
                 if (Main.rand.Next(10) == 0)
-                    Dust.NewDust(projectile.position, projectile.height, projectile.height, 204, projectile.velocity.X / 2, projectile.velocity.Y / 2, 128, default(Color), 1.2f);
+                {
+                    Vector2 v = Main.rand.NextVector2Circular(8, 8);
+                    Dust.NewDust(projectile.Center + v, 1, 1, 204, projectile.velocity.X / 2, projectile.velocity.Y / 2, 128, default(Color), 1.2f);
+                }
             }
         }
 
@@ -83,24 +84,30 @@ namespace Promethium.Projectiles
         {
             for (int i = 0; i < 30; ++i)
             {
-                Vector2 v = Main.rand.NextVector2Circular(length, 5).RotatedBy(projectile.rotation);
-                int dust = Dust.NewDust(projectile.position + v, 1, 1, 204, projectile.velocity.X / 1.5F, projectile.velocity.Y / 1.5F, 64);
+                Vector2 v = Main.rand.NextVector2Circular(length, 8).RotatedBy(projectile.rotation);
+                int dust = Dust.NewDust(projectile.Center + v, 1, 1, 204, projectile.velocity.X / 1.5F, projectile.velocity.Y / 1.5F, 64);
                 Main.dust[dust].noGravity = true;
             }
         }
 
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            Point c = projectile.Center.ToPoint();
+            Rectangle r = new Rectangle(c.X - length / 2, c.Y - 4, length, 8);
+            return Utils.PolygonIntersection(Utils.Rect2Poly(r, c, projectile.rotation), Utils.Rect2Poly(targetHitbox));
+        }
+
         public override void Kill(int timeLeft)
         {
-            if (projectile.ai[0] == ItemID.Starfury)
-                Projectile.NewProjectile(projectile.position - projectile.velocity * (260 - timeLeft), projectile.velocity, ProjectileID.Starfury, projectile.damage, projectile.knockBack, projectile.owner);
+            if (Main.myPlayer == projectile.owner && projectile.ai[0] == ItemID.Starfury)
+                Projectile.NewProjectile(projectile.position - projectile.velocity * (210 - timeLeft), projectile.velocity, ProjectileID.Starfury, projectile.damage, projectile.knockBack, projectile.owner);
             projectile.velocity /= 1.5F;
             SpawnEffect();
         }
 
         public override bool PreDraw(SpriteBatch sb, Color lightColor)
         {
-            Vector2 actualPos = projectile.position - Main.screenPosition;
-            sb.Draw(Main.itemTexture[item], actualPos, null, lightColor * (255 - projectile.alpha), projectile.rotation + MathHelper.PiOver4, new Vector2(iW / 2F, iH / 2F), 1, SpriteEffects.None, 0);
+            sb.Draw(Main.itemTexture[item], projectile.Center - Main.screenPosition, null, lightColor * (255 - projectile.alpha), projectile.rotation + MathHelper.PiOver4, new Vector2(iW / 2F, iH / 2F), 1, SpriteEffects.None, 0);
             return false;
         }
     }

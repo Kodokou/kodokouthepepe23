@@ -35,7 +35,7 @@ namespace Promethium.Projectiles
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {
                     Projectile p = Main.projectile[i];
-                    if (p.active && p.type == mod.ProjectileType<Projectiles.FireGem>() && p.owner == projectile.owner)
+                    if (p.active && p.type == projectile.type && p.owner == projectile.owner)
                     {
                         if (p.timeLeft < shortestTimeLeft)
                         {
@@ -65,7 +65,7 @@ namespace Promethium.Projectiles
                             if (projectile.position.X + projectile.width - 4 > tilePos.X && projectile.position.X + 4 < tilePos.X + 16 && projectile.position.Y + projectile.height - 4 > tilePos.Y && projectile.position.Y + 4 < tilePos.Y + 16)
                             {
                                 projectile.velocity.X = 0;
-                                projectile.velocity.Y = -0.2F;
+                                projectile.velocity.Y = -0.45F;
                                 if (projectile.ai[0] == 0)
                                 {
                                     projectile.ai[0] = 1;
@@ -87,7 +87,7 @@ namespace Promethium.Projectiles
                         projectile.netUpdate = true;
                     }
                 }
-                projectile.velocity.Y += 0.25F;
+                projectile.velocity.Y += 0.45F;
             }
             projectile.rotation += projectile.velocity.X / 40;
             if (projectile.ai[0] == 1)
