@@ -12,6 +12,7 @@ namespace Promethium.Buffs
         {
             Main.buffName[Type] = "Mana Buckler";
             Main.buffTip[Type] = "";
+            Main.buffNoSave[Type] = true;
         }
 
         public override void Update(Player plr, ref int buffIndex)

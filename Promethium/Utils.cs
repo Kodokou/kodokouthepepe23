@@ -31,6 +31,21 @@ namespace Promethium
             Main.dust[Dust.NewDust(new Vector2(rect.X + rect.Width, rect.Y + rect.Height), 1, 1, DustID.Fire, 0, 0, 128)].noGravity = true;
         }
 
+        public static void CustomKnockback(NPC npc, float power, float x, float y)
+        {
+            if (npc.knockBackResist > 0)
+            {
+                float realPower = power * npc.knockBackResist;
+                if (realPower > 8) realPower = 8 + (realPower - 8) * 0.9F;
+                if (realPower > 10) realPower = 10 + (realPower - 10) * 0.8F;
+                if (realPower > 12) realPower = 12 + (realPower - 12) * 0.7F;
+                if (realPower > 14) realPower = 14 + (realPower - 14) * 0.6F;
+                if (realPower > 16) realPower = 16;
+                npc.velocity.Y = realPower * (npc.noGravity ? 0.5F : 0.75F) * npc.knockBackResist * y;
+                npc.velocity.X = realPower * npc.knockBackResist * x;
+            }
+        }
+
         public static void RegenEffect(Entity en, int dust = 45, int sound = 25)
         {
             if (sound != -1) Main.PlaySound(sound);

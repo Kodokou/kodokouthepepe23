@@ -15,7 +15,7 @@ namespace Promethium.Items.Weapons
         {
             item.name = "Quantum Break";
             item.toolTip = "Allows to break the passage of time itself";
-            item.damage = 80;
+            item.damage = 115;
             item.width = 60;
             item.height = 60;
             item.melee = true;
@@ -69,14 +69,14 @@ namespace Promethium.Items.Weapons
                 if (plr.itemAnimation == 24)
                 {
                     feetY = plr.position.Y + plr.height;
-                    plr.velocity.Y -= plr.gravity * 24;
+                    plr.velocity.Y -= plr.gravDir * Player.jumpSpeed * 2;
                 }
                 else if (Main.myPlayer == plr.whoAmI)
                 {
-                    if (plr.itemAnimation % 5 == 1)
+                    if (plr.itemAnimation % 4 == 1)
                     {
-                        Vector2 pos = new Vector2(plr.Center.X + plr.direction * (30 - plr.itemAnimation) * 5, feetY);
-                        Projectile.NewProjectile(pos, plr.velocity + Vector2.UnitY * -2, mod.ProjectileType<Projectiles.QuantumBeam>(), item.damage, item.knockBack, plr.whoAmI);
+                        Vector2 pos = new Vector2(plr.Center.X + plr.direction * (30 - plr.itemAnimation) * 9, feetY - 24);
+                        Projectile.NewProjectile(pos, plr.velocity + new Vector2(plr.direction, -2), mod.ProjectileType<Projectiles.QuantumBeam>(), item.damage, item.knockBack, plr.whoAmI);
                     }
                 }
             }
@@ -114,7 +114,7 @@ namespace Promethium.Items.Weapons
 
         public override void OnHitNPC(Player plr, NPC target, int damage, float knockBack, bool crit)
         {
-            if (item.useStyle == 2) target.velocity.Y -= 6 * knockBack / item.knockBack;
+            if (item.useStyle == 2) Utils.CustomKnockback(target, knockBack, 0, -2);
         }
 
         public override void UpdateInventory(Player plr)

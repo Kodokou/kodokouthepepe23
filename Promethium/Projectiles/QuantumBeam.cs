@@ -26,13 +26,14 @@ namespace Promethium.Projectiles
         {
             if (projectile.alpha > 30) projectile.alpha -= 30;
             projectile.velocity.Y -= 0.5F;
+            projectile.velocity.X += projectile.velocity.X > 0 ? 0.25F : 0.25F;
             if (Main.rand.Next(2) == 0)
                 Main.dust[Dust.NewDust(projectile.position, projectile.width, projectile.height, 229, projectile.velocity.X / 2, projectile.velocity.Y / 2, 192)].noGravity = true;
         }
 
         public override void OnHitNPC(NPC target, int damage, float knockback, bool crit)
         {
-            target.velocity.Y -= 3 * knockback / projectile.knockBack;
+            Utils.CustomKnockback(target, knockback, 0, -2);
         }
 
         public override void Kill(int timeLeft)

@@ -13,16 +13,17 @@ namespace Promethium.Buffs
             Main.buffName[Type] = "Soul Prison";
             Main.buffTip[Type] = "";
             Main.buffNoTimeDisplay[Type] = true;
+            Main.buffNoSave[Type] = true;
         }
 
         public override void Update(Player plr, ref int buffIndex)
         {
-            souls = plr.GetModPlayer<CCMPlayer>(mod).statNecro;
+            souls = (int)plr.GetModPlayer<CCMPlayer>(mod).statNecro;
         }
 
         public override void ModifyBuffTip(ref string tip, ref int rare)
         {
-            tip = "Power in possesion: " + souls;
+            tip = souls + " soul power in possesion";
         }
 
         public override bool Autoload(ref string name, ref string texture)

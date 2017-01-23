@@ -9,8 +9,8 @@ namespace Promethium.Projectiles
         public override void SetDefaults()
         {
             projectile.name = "Lightning Strike";
-            projectile.width = 20;
-            projectile.height = 20;
+            projectile.width = 8;
+            projectile.height = 8;
             projectile.friendly = true;
             projectile.timeLeft = 100;
             projectile.penetrate = 1;
@@ -44,6 +44,12 @@ namespace Promethium.Projectiles
                 if (Main.myPlayer == projectile.owner)
                     Projectile.NewProjectile(endPos, Vector2.Zero, mod.ProjectileType("LightningEffect"), 0, 0, projectile.owner, projectile.ai[0], projectile.ai[1]);
             }
+        }
+
+        public override bool? Colliding(Rectangle projHitbox, Rectangle targetHitbox)
+        {
+            Point p = projectile.Center.ToPoint();
+            return targetHitbox.Intersects(new Rectangle(p.X - 12, p.Y - 12, 24, 24));
         }
 
         public override void ModifyHitNPC(NPC target, ref int damage, ref float knockback, ref bool crit, ref int hitDirection)
