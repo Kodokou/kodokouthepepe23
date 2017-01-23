@@ -100,7 +100,7 @@ namespace Promethium.Projectiles
         public override void Kill(int timeLeft)
         {
             if (Main.myPlayer == projectile.owner && projectile.ai[0] == ItemID.Starfury)
-                Projectile.NewProjectile(projectile.position - projectile.velocity * (210 - timeLeft), projectile.velocity, ProjectileID.Starfury, projectile.damage, projectile.knockBack, projectile.owner);
+                Projectile.NewProjectile(projectile.position - projectile.oldVelocity * (210 - timeLeft), projectile.oldVelocity, ProjectileID.Starfury, projectile.damage, projectile.knockBack, projectile.owner);
             projectile.velocity /= 1.5F;
             SpawnEffect();
         }

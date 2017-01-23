@@ -19,14 +19,14 @@ namespace Promethium.Items.Weapons
             item.value = Item.buyPrice(0, 2);
             item.mana = 10;
             item.rare = 3;
-            item.toolTip = "Mana becomes shield";
+            item.toolTip = "Makes your mana become your shield";
             item.UseSound = SoundID.Item8;
         }
 
         public override bool UseItem(Player plr)
         {
             plr.GetModPlayer<CCMPlayer>(mod).manaBucklerLeft = 5;
-            plr.AddBuff(mod.BuffType("ManaBuckler"), 7200);
+            plr.AddBuff(mod.BuffType<Buffs.ManaBuckler>(), 7200, false);
             return true;
         }
     }

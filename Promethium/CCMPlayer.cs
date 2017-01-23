@@ -11,8 +11,8 @@ namespace Promethium
     class CCMPlayer : ModPlayer
     {
         private const byte KEY_DOWN = 0, KEY_UP = 1, KEY_RIGHT = 2, KEY_LEFT = 3;
-        public int manaBucklerLeft = 0, time = 0, statNecro = 0, nonResetTime = 0;
-        public bool inFront = false, inBack = false;
+        public int manaBucklerLeft = 0, time = 0, statNecro = 0;
+        public bool necroEq = false;
 
         public override void SetControls()
         {
@@ -31,6 +31,10 @@ namespace Promethium
         {
             if (player.FindBuffIndex(mod.BuffType<Buffs.ManaBuckler>()) == -1)
                 manaBucklerLeft = 0;
+            if (player.FindBuffIndex(mod.BuffType<Buffs.Necromancer>()) == -1)
+                statNecro = 0;
+            // TODO: Based on Necromancer armor set?
+            necroEq = true;
         }
 
         private void KeyDoubleTap(int key)
@@ -43,6 +47,20 @@ namespace Promethium
         {
             //if (key == (Main.ReversedUpDownArmorSetBonuses ? KEY_UP : KEY_DOWN))
             //    if (time >= 60) player.MinionRestTargetPoint = Vector2.Zero;
+        }
+
+        public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
+        {
+            if (necroEq)
+            {
+                if (target.life <= 0) statNecro += target.lifeMax / 50;
+                if (statNecro > 0) player.AddBuff(mod.BuffType<Buffs.Necromancer>(), int.MaxValue, false);
+            }
+        }
+
+        public override void OnHitNPCWithProj(Projectile proj, NPC target, int damage, float knockback, bool crit)
+        {
+            OnHitNPC(null, target, damage, knockback, crit);
         }
 
         public override bool PreHurt(bool pvp, bool quiet, ref int damage, ref int hitDirection, ref bool crit, ref bool customDamage, ref bool playSound, ref bool genGore, ref PlayerDeathReason damageSource)
@@ -91,32 +109,26 @@ namespace Promethium
 
         public override void PostUpdate()
         {
-            ++nonResetTime;
             if (++time >= 256) time = 0;
         }
 
         public static readonly PlayerLayer frontLayer = new PlayerLayer("Promethium", "CCM Front Layer", drawInfo =>
         {
-                Mod mod = ModLoader.GetMod("Promethium");
-                Player plr = drawInfo.drawPlayer;
-                CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(mod);
-                if (mplr.manaBucklerLeft > 0)
-                {
-                    Texture2D tex = mod.GetTexture("Items/Weapons/ManaBuckler");
-                    Vector2 pos = plr.MountedCenter + new Vector2(16 * plr.direction, 4);
-                    float step = System.Math.Abs((mplr.time % 128) - 64) / 64F;
-                    float scale = step * 0.3F + 0.85F;
-                    Color c = Lighting.GetColor((int)(pos.X / 16F), (int)(pos.Y / 16F)) * (step * 0.5F + 0.25F);
-                    c.B = (byte)(c.B > 205 ? 255 : c.B + 50);
-                    pos -= Main.screenPosition;
-                    DrawData data = new DrawData(tex, pos, null, c, 0, tex.Size() / 2, scale, SpriteEffects.None, 0);
-                    Main.playerDrawData.Add(data);
-
-                    // TODO: Maybe some effects IDK, that's how you do them tho
-                    //int dust = Dust.NewDust();
-                    //Main.playerDrawDust.Add(dust); // Important apparently
-                }
-            
+            Mod mod = ModLoader.GetMod("Promethium");
+            Player plr = drawInfo.drawPlayer;
+            CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(mod);
+            if (mplr.manaBucklerLeft > 0)
+            {
+                Texture2D tex = mod.GetTexture("Items/Weapons/ManaBuckler");
+                Vector2 pos = plr.MountedCenter + new Vector2(16 * plr.direction, 4);
+                float step = System.Math.Abs((mplr.time % 128) - 64) / 64F;
+                float scale = step * 0.3F + 0.85F;
+                Color c = Lighting.GetColor((int)(pos.X / 16F), (int)(pos.Y / 16F)) * (step * 0.5F + 0.25F);
+                c.B = (byte)(c.B > 205 ? 255 : c.B + 50);
+                pos -= Main.screenPosition;
+                DrawData data = new DrawData(tex, pos, null, c, 0, tex.Size() / 2, scale, SpriteEffects.None, 0);
+                Main.playerDrawData.Add(data);
+            }
             /* Custom pseudo-accessory drawing test
             if (plr.HeldItem != null)
             {
@@ -129,34 +141,34 @@ namespace Promethium
                 Main.playerDrawData.Add(drawData);
             }
             */
-
-                DrawBones(plr, -1);
+            DrawBones(plr, 1);
         });
 
         public static readonly PlayerLayer backLayer = new PlayerLayer("Promethium", "CCM Back Layer", drawInfo =>
-            {
-                DrawBones(drawInfo.drawPlayer, 1);
-            });
+        {
+            DrawBones(drawInfo.drawPlayer, -1);
+        });
 
         private static void DrawBones(Player plr, int sideMult)
         {
             CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(ModLoader.GetMod("Promethium"));
-            if (mplr.statNecro > 0)
+            if (mplr.statNecro > 4)
             {
-                int maxI = mplr.statNecro / 5;
+                int maxI = (int)Math.Log(mplr.statNecro);
                 Texture2D tex = Main.itemTexture[ItemID.Bone];
                 for (int i = maxI; i > 0; --i)
                 {
-                    float normTime = MathHelper.Pi * (128 - mplr.nonResetTime % 256) / 64 + i * MathHelper.TwoPi / maxI; //-2pi -> 2pi
-                    float lside = ((normTime + MathHelper.Pi - MathHelper.PiOver2 * sideMult) % MathHelper.TwoPi);
-                    float rside = MathHelper.Pi;
-                    if (lside <= rside)
+                    // TODO: Provide a different normTime for multiples of 3?
+                    float normTime = MathHelper.Pi * (128 - mplr.time) * 3 / 128 + i * MathHelper.TwoPi * 3 / maxI;
+                    float lside = ((Math.Abs(normTime) + MathHelper.PiOver2) % MathHelper.TwoPi) - MathHelper.Pi;
+                    if ((sideMult == 1 && lside >= 0) || (sideMult == -1 && lside < 0))
                     {
                         Vector2 pos = plr.MountedCenter - Main.screenPosition;
-                        pos += Vector2.UnitX * 64 * sideMult; // FOR TESTING
-                        pos += new Vector2((float)Math.Sin(normTime) * plr.width * 3 / 2, (float)Math.Cos(normTime / 2) * plr.height * 2 / 3);
-                        DrawData data = new DrawData(tex, pos, null, Color.White, normTime, tex.Size() / 2, 1, SpriteEffects.None, 0);
+                        pos += new Vector2((float)Math.Sin(normTime) * plr.width, (float)Math.Cos(normTime / 3) * plr.height / 2);
+                        DrawData data = new DrawData(tex, pos, null, Color.LightGray * 0.75F, normTime, tex.Size() / 2, 1, SpriteEffects.None, 0);
                         Main.playerDrawData.Add(data);
+                        // TODO: Add some gray dust for da bonez
+                        //Main.playerDrawDust.Add(dust);
                     }
                 }
             }

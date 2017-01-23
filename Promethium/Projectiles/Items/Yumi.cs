@@ -43,7 +43,8 @@ namespace Promethium.Projectiles.Items
             if (projectile.frame > 4 && projectile.frameCounter % 3 == 0)
             {
                 Vector2 v = Main.rand.NextVector2CircularEdge(16, 16);
-                Dust d = Main.dust[Dust.NewDust(Main.player[projectile.owner].MountedCenter + projectile.velocity * 2 + v, 1, 1, 127, -v.X / 2, -v.Y / 2, 96, default(Color), 1.25F)];
+                Vector2 pv = Main.player[projectile.owner].velocity * 2 / 3;
+                Dust d = Main.dust[Dust.NewDust(Main.player[projectile.owner].MountedCenter + projectile.velocity * 2 + v, 1, 1, 127, -v.X / 2 + pv.X, -v.Y + pv.Y / 2, 96, default(Color), 1.25F)];
                 d.noGravity = true;
                 d.noLight = true;
             }
