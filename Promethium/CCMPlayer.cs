@@ -23,7 +23,7 @@ namespace Promethium
                 released |= (i == KEY_RIGHT && player.controlRight && player.releaseRight) || (i == KEY_LEFT && player.controlLeft && player.releaseLeft);
                 bool pressed = (i == KEY_DOWN && player.controlDown) || (i == KEY_UP && player.controlUp);
                 pressed |= (i == KEY_RIGHT && player.controlRight) || (i == KEY_LEFT && player.controlLeft);
-                if (released && player.doubleTapCardinalTimer[i] > 0) KeyDoubleTap(i);
+                if (released && player.doubleTapCardinalTimer[i] > 0 && player.doubleTapCardinalTimer[i] < 15) KeyDoubleTap(i);
                 if (pressed) player.KeyHoldDown(i, player.holdDownCardinalTimer[i]);
             }
         }
@@ -34,20 +34,19 @@ namespace Promethium
                 manaBucklerLeft = 0;
             if (player.FindBuffIndex(mod.BuffType<Buffs.Necromancer>()) == -1)
                 statNecro = 0;
-            // TODO: Based on Necromancer armor set?
-            necroEq = true;
+            necroEq = player.CountItem(mod.ItemType<Items.Weapons.Necronomicon>(), 1) > 0;
         }
 
         private void KeyDoubleTap(int key)
         {
             if (key == (Main.ReversedUpDownArmorSetBonuses ? KEY_UP : KEY_DOWN))
-                if (necroEq) player.MinionNPCTargetAim();
+                if (player.HeldItem.type == mod.ItemType<Items.Weapons.Necronomicon>()) player.MinionNPCTargetAim();
         }
 
         private void KeyHoldDown(int key, int time)
         {
             if (key == (Main.ReversedUpDownArmorSetBonuses ? KEY_UP : KEY_DOWN))
-                if (necroEq && time >= 60) player.MinionAttackTargetNPC = -1;
+                if (player.HeldItem.type == mod.ItemType<Items.Weapons.Necronomicon>() && time >= 60) player.MinionAttackTargetNPC = -1;
         }
 
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
@@ -152,26 +151,28 @@ namespace Promethium
 
         private static void DrawBones(Player plr, int sideMult)
         {
-            CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(ModLoader.GetMod("Promethium"));
+            Mod mod = ModLoader.GetMod("Promethium");
+            CCMPlayer mplr = plr.GetModPlayer<CCMPlayer>(mod);
             if (mplr.statNecro > 4)
             {
                 int maxI = (int)Math.Log(mplr.statNecro);
-                Texture2D tex = Main.itemTexture[ItemID.SkullLantern];
+                Texture2D tex = mod.GetTexture("Effects/SkullEffect");
                 for (int i = maxI; i > 0; --i)
                 {
                     float normTime;
-                    if (i % 3 == 0) normTime = MathHelper.Pi * (128 - mplr.time) * 3 / 64 + i * MathHelper.TwoPi * 3 / maxI;
-                    else normTime = MathHelper.Pi * (128 - mplr.time) * 3 / 128 + i * MathHelper.TwoPi * 3 / maxI;
+                    if (i % 3 == 0) normTime = MathHelper.Pi * mplr.time * 3 / 64 + i * MathHelper.TwoPi * 3 / maxI;
+                    else normTime = MathHelper.Pi * mplr.time * 3 / 128 + i * MathHelper.TwoPi * 3 / maxI;
                     float lside = ((Math.Abs(normTime) + MathHelper.PiOver2) % MathHelper.TwoPi) - MathHelper.Pi;
                     if ((sideMult == 1 && lside >= 0) || (sideMult == -1 && lside < 0))
                     {
                         Vector2 pos = plr.MountedCenter;
                         pos += new Vector2((float)Math.Sin(normTime) * plr.width * 5 / 4, (float)Math.Cos(normTime / 3) * plr.height * 5 / 8);
-                        DrawData data = new DrawData(tex, pos - Main.screenPosition, null, Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)) * 0.75F, 0, tex.Size() / 2, 0.75F, lside > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
+                        int frame = (mplr.time + i * 256 / maxI) % 64 > 32 ? 0 : 29;
+                        DrawData data = new DrawData(tex, pos - Main.screenPosition, new Rectangle(0, frame, 28, 29), Lighting.GetColor((int)(pos.X / 16), (int)(pos.Y / 16)) * 0.9F, 0, new Vector2(tex.Width / 2F, tex.Height / 4F), 0.666F, lside > 0 ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0);
                         Main.playerDrawData.Add(data);
                         if (Main.rand.Next(4) == 0)
                         {
-                            int d = Dust.NewDust(pos - new Vector2(4, 4), tex.Width, tex.Height, 65, 0, 0, 92, default(Color), 0.9F);
+                            int d = Dust.NewDust(pos - new Vector2(4, 4), tex.Width, tex.Height, 65, 0, 0, 92, default(Color), 1.1F);
                             Main.playerDrawDust.Add(d);
                         }
                     }

@@ -78,7 +78,7 @@ namespace Promethium.Projectiles
 
         public override bool PreDraw(SpriteBatch sb, Color tint)
         {
-            Texture2D tex = ModLoader.GetTexture("Promethium/Projectiles/LightningEffect");
+            Texture2D tex = mod.GetTexture("Projectiles/LightningEffect");
             const float thickScale = 0.03F;
             Vector2 capOrigin = new Vector2(tex.Width, tex.Height / 2F);
             Vector2 middleOrigin = new Vector2(0, tex.Height / 2F);
