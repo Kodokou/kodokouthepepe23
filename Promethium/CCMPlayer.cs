@@ -24,7 +24,7 @@ namespace Promethium
                 bool pressed = (i == KEY_DOWN && player.controlDown) || (i == KEY_UP && player.controlUp);
                 pressed |= (i == KEY_RIGHT && player.controlRight) || (i == KEY_LEFT && player.controlLeft);
                 if (released && player.doubleTapCardinalTimer[i] > 0 && player.doubleTapCardinalTimer[i] < 15) KeyDoubleTap(i);
-                if (pressed) player.KeyHoldDown(i, player.holdDownCardinalTimer[i]);
+                if (pressed) KeyHoldDown(i, player.holdDownCardinalTimer[i]);
             }
         }
 
@@ -40,13 +40,15 @@ namespace Promethium
         private void KeyDoubleTap(int key)
         {
             if (key == (Main.ReversedUpDownArmorSetBonuses ? KEY_UP : KEY_DOWN))
-                if (player.HeldItem.type == mod.ItemType<Items.Weapons.Necronomicon>()) player.MinionNPCTargetAim();
+                if (player.HeldItem.type == mod.ItemType<Items.Weapons.Necronomicon>()) //player.MinionNPCTargetAim();
+                    player.MinionRestTargetPoint = Main.MouseScreen + Main.screenPosition;
         }
 
         private void KeyHoldDown(int key, int time)
         {
             if (key == (Main.ReversedUpDownArmorSetBonuses ? KEY_UP : KEY_DOWN))
-                if (player.HeldItem.type == mod.ItemType<Items.Weapons.Necronomicon>() && time >= 60) player.MinionAttackTargetNPC = -1;
+                if (player.HeldItem.type == mod.ItemType<Items.Weapons.Necronomicon>() && time >= 60) //player.MinionAttackTargetNPC = -1;
+                    player.MinionRestTargetPoint = Vector2.Zero;
         }
 
         public override void OnHitNPC(Item item, NPC target, int damage, float knockback, bool crit)
@@ -109,6 +111,18 @@ namespace Promethium
 
         public override void PostUpdate()
         {
+            for (int i = 0; i < Main.maxProjectiles; ++i)
+            {
+                Projectile p = Main.projectile[i];
+                if (p.owner == player.whoAmI && p.modProjectile != null && p.modProjectile is Projectiles.Minions.Skeleton)
+                {
+                    Projectiles.Minions.Skeleton s = (Projectiles.Minions.Skeleton)p.modProjectile;
+                    statNecro -= s.necroDrain;
+                    if (statNecro <= 0 && Main.myPlayer == player.whoAmI) p.Kill();
+                }
+            }
+            statNecro -= 0.0001F;
+            if (statNecro < 0) statNecro = 0;
             if (++time >= 256) time = 0;
         }
 
@@ -172,7 +186,7 @@ namespace Promethium
                         Main.playerDrawData.Add(data);
                         if (Main.rand.Next(4) == 0)
                         {
-                            int d = Dust.NewDust(pos - new Vector2(4, 4), tex.Width, tex.Height, 65, 0, 0, 92, default(Color), 1.1F);
+                            int d = Dust.NewDust(pos - new Vector2(4, 4), tex.Width, tex.Height, 65, 0, 0, 92, default(Color), 1.25F);
                             Main.playerDrawDust.Add(d);
                         }
                     }

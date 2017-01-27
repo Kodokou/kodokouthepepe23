@@ -8,9 +8,9 @@ namespace Promethium.Items.Weapons
 {
     class Necronomicon : ModItem
     {
-        private int rightTime = 0;
-        public int necroCost = 5;
-        public string summon = "";
+        private int rightTime;
+        public int necroCost;
+        public string summon;
 
         public override void SetDefaults()
         {
@@ -24,18 +24,31 @@ namespace Promethium.Items.Weapons
             item.height = 30;
             item.UseSound = SoundID.Item44;
             item.rare = 4;
-            item.useAnimation = 30;
-            item.useTime = 30;
+            item.useAnimation = 20;
+            item.useTime = 20;
             item.knockBack = 6;
             item.toolTip = "'The shadows beckon'";
             item.toolTip2 = "Allows collection of slain souls";
             item.value = Item.buyPrice(0, 15, 0, 0);
+            summon = "";
+            necroCost = 5;
         }
 
         public override bool AltFunctionUse(Player plr)
         {
             if (rightTime == 0)
             {
+                // TODO: Remove pathfinding debug function
+                try
+                {
+                    PathFinder a = new PathFinder() { Debug = true };
+                    var path = a.FindPath(plr, (Main.MouseScreen + Main.screenPosition).ToTileCoordinates(), 15);
+                    if (path != null)
+                        foreach (Point p in path)
+                            Main.dust[Dust.NewDust(p.ToWorldCoordinates(), 1, 1, DustID.Fire)].noGravity = true;
+                }
+                catch (System.Exception ex) { ErrorLogger.Log(ex.ToString()); }
+                /* TODO: Restore after debug ends
                 if (summon == "")
                 {
                     summon = "Warrior";
@@ -54,6 +67,7 @@ namespace Promethium.Items.Weapons
                     necroCost = 5;
                     item.mana = 10;
                 }
+                */
                 CombatText.NewText(new Rectangle((int)plr.position.X, (int)plr.position.Y, plr.width, plr.height), Color.LightGray, "Minion: Skeleton " + summon, false, false);
                 rightTime = 30;
             }

@@ -14,8 +14,15 @@ namespace Promethium.Projectiles.Minions
         {
             base.SetDefaults();
             projectile.name = "Skeleton Warrior";
-            projectile.penetrate = 5;
+            projectile.penetrate = -1;
             item = Main.itemTexture[ItemID.BoneSword];
+            necroDrain = 0.00025F;
+            attackDist = 20;
+        }
+
+        public override bool Attack(NPC target, float dist)
+        {
+            return false;
         }
 
         public override void PostDraw(SpriteBatch sb, Color lightColor)
