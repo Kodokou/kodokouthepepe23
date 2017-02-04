@@ -124,6 +124,8 @@ namespace Promethium
             statNecro -= 0.0001F;
             if (statNecro < 0) statNecro = 0;
             if (++time >= 256) time = 0;
+            // TODO: Remove debug modifications
+            if (statNecro < 100) statNecro = 100;
         }
 
         public static readonly PlayerLayer frontLayer = new PlayerLayer("Promethium", "CCM Front Layer", drawInfo =>

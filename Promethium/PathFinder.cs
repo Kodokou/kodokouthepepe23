@@ -22,8 +22,7 @@ namespace Promethium
         {
             public float F, G;
             public Point PPos;
-            public byte Status, PZ;
-            public short Jump;
+            public byte Status, PZ, Jump;
 
             public Node UpdateStatus(byte newStatus)
             {
@@ -38,7 +37,6 @@ namespace Promethium
 
         public bool Debug;
         private PriorityQueue<Location> mOpen;
-        private List<Point> mClose;
         private bool mStop;
         private bool mStopped = true;
         private bool mDiagonals = true;
@@ -59,7 +57,6 @@ namespace Promethium
         {
             nodes = new Dictionary<Point, List<Node>>();
             touchedLocations = new Stack<Point>();
-            mClose = new List<Point>();
             mOpen = new PriorityQueue<Location>(new ComparePFNodeMatrix(nodes), 16);
         }
         
@@ -95,7 +92,7 @@ namespace Promethium
             return Collision.SolidCollision(p.ToWorldCoordinates(0, 16 - en.height), en.width, en.height);
         }
 
-        public List<Point> FindPath(Entity en, Point end, short jumpHeight, short currJump = 0)
+        public LinkedList<Location> FindPath(Entity en, Point end, byte jumpHeight, byte currJump = 0)
         {
             lock (this)
             {
@@ -166,27 +163,27 @@ namespace Promethium
                         else if (CollisionAt(new Point(mNewLocation.X, mNewLocation.Y - 1), en)) atCeiling = true;
 
                         var jumpLength = nodes[mLocation.Pos][mLocation.Z].Jump;
-                        short newJumpLength = jumpLength;
+                        byte newJumpLength = jumpLength;
 
                         if (atCeiling)
                         {
-                            if (mNewLocation.X != mLocation.Pos.X) newJumpLength = (short)Math.Max(jumpHeight * 2 + 1, jumpLength + 1);
-                            else newJumpLength = (short)Math.Max(jumpHeight * 2, jumpLength + 2);
+                            if (mNewLocation.X != mLocation.Pos.X) newJumpLength = (byte)Math.Max(jumpHeight * 2 + 1, jumpLength + 1);
+                            else newJumpLength = (byte)Math.Max(jumpHeight * 2, jumpLength + 2);
                         }
                         else if (onGround) newJumpLength = 0;
                         else if (mNewLocation.Y < mLocation.Pos.Y)
                         {
                             if (jumpLength < 2) newJumpLength = 3;
-                            else if (jumpLength % 2 == 0) newJumpLength = (short)(jumpLength + 2);
-                            else newJumpLength = (short)(jumpLength + 1);
+                            else if (jumpLength % 2 == 0) newJumpLength = (byte)(jumpLength + 2);
+                            else newJumpLength = (byte)(jumpLength + 1);
                         }
                         else if (mNewLocation.Y > mLocation.Pos.Y)
                         {
-                            if (jumpLength % 2 == 0) newJumpLength = (short)Math.Max(jumpHeight * 2, jumpLength + 2);
-                            else newJumpLength = (short)Math.Max(jumpHeight * 2, jumpLength + 1);
+                            if (jumpLength % 2 == 0) newJumpLength = (byte)Math.Max(jumpHeight * 2, jumpLength + 2);
+                            else newJumpLength = (byte)Math.Max(jumpHeight * 2, jumpLength + 1);
                         }
                         else if (!onGround && mNewLocation.X != mLocation.Pos.X)
-                            newJumpLength = (short)(jumpLength + 1);
+                            newJumpLength = (byte)(jumpLength + 1);
 
                         if (jumpLength >= 0 && jumpLength % 2 != 0 && mLocation.Pos.X != mNewLocation.X) continue;
                         if (jumpLength >= jumpHeight * 2 && mNewLocation.Y < mLocation.Pos.Y) continue;
@@ -247,44 +244,39 @@ namespace Promethium
 
                 if (mFound)
                 {
-                    mClose.Clear();
-                    Point pos = end;
+                    LinkedList<Location> ret = new LinkedList<Location>();
 
                     Node fPrevNodeTmp = new Node();
                     Node fNodeTmp = nodes[end][0];
 
-                    Point fNode = end;
+                    Location fNode = new Location(end, fNodeTmp.Jump);
                     Point fPrevNode = end;
 
-                    Point loc = fNodeTmp.PPos;
-
-                    while (fNode.X != fNodeTmp.PPos.X || fNode.Y != fNodeTmp.PPos.Y)
+                    while (fNode.Pos.X != fNodeTmp.PPos.X || fNode.Pos.Y != fNodeTmp.PPos.Y)
                     {
-                        var fNextNodeTmp = nodes[loc][fNodeTmp.PZ];
+                        var fNextNodeTmp = nodes[fNodeTmp.PPos][fNodeTmp.PZ];
 
-                        if ((mClose.Count == 0)
-                            || (Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsSolid() && Main.tile[fNode.X, fNode.Y + 1].IsTopSolid())
-                            || (Main.tile[fNode.X, fNode.Y + 1].IsSolid() && Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsTopSolid())
-                            || fNodeTmp.Jump == 3
-                            || (fNextNodeTmp.Jump != 0 && fNodeTmp.Jump == 0)                                                                                                       //mark jumps starts
-                            || (fNodeTmp.Jump == 0 && fPrevNodeTmp.Jump != 0)                                                                                                       //mark landings
-                            || (fNode.Y > mClose[mClose.Count - 1].Y && fNode.Y > fNodeTmp.PPos.Y)
-                            || (fNode.Y < mClose[mClose.Count - 1].Y && fNode.Y < fNodeTmp.PPos.Y)
-                            || ((CollisionAt(new Point(fNode.X - 1, fNode.Y), en) || CollisionAt(new Point(fNode.X + 1, fNode.Y), en))
-                                && fNode.Y != mClose[mClose.Count - 1].Y && fNode.X != mClose[mClose.Count - 1].X))
-                            mClose.Add(fNode);
+                        if (ret.Count == 0
+                            || (Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsSolid() && Main.tile[fNode.Pos.X, fNode.Pos.Y + 1].IsTopSolid())
+                            || (Main.tile[fNode.Pos.X, fNode.Pos.Y + 1].IsSolid() && Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsTopSolid())
+                    //      || fNodeTmp.Jump == 3
+                            || (fNextNodeTmp.Jump != 0 && fNodeTmp.Jump == 0)                                                                                                       
+                            || (fNodeTmp.Jump == 0 && fPrevNodeTmp.Jump != 0)                                                                                        
+                            || (fNode.Pos.Y > ret.Last.Value.Pos.Y && fNode.Pos.Y > fNodeTmp.PPos.Y)
+                            || (fNode.Pos.Y < ret.Last.Value.Pos.Y && fNode.Pos.Y < fNodeTmp.PPos.Y)
+                            || ((CollisionAt(new Point(fNode.Pos.X - 1, fNode.Pos.Y), en) || CollisionAt(new Point(fNode.Pos.X + 1, fNode.Pos.Y), en))
+                                && fNode.Pos.Y != ret.Last.Value.Pos.Y && fNode.Pos.X != ret.Last.Value.Pos.X))
+                            ret.AddLast(fNode);
 
-                        fPrevNode = fNode;
-                        pos = fNodeTmp.PPos;
+                        fPrevNode = fNode.Pos;
+                        fNode = new Location(fNodeTmp.PPos, fNodeTmp.Jump);
                         fPrevNodeTmp = fNodeTmp;
                         fNodeTmp = fNextNodeTmp;
-                        loc = fNodeTmp.PPos;
-                        fNode = pos;
                     }
 
-                    mClose.Add(fNode);
+                    ret.AddLast(fNode);
                     mStopped = true;
-                    return mClose;
+                    return ret;
                 }
                 mStopped = true;
                 return null;

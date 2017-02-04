@@ -9,7 +9,7 @@ namespace Promethium.Items.Weapons
     {
         private Rectangle hitBox = new Rectangle();
         private int resetTimer = 0;
-        private float feetY = 0;
+        private float startY = 0;
 
         public override void SetDefaults()
         {
@@ -68,16 +68,13 @@ namespace Promethium.Items.Weapons
                 plr.itemRotation = plr.itemRotation * 0.85F + plr.direction;
                 if (plr.itemAnimation == 24)
                 {
-                    feetY = plr.position.Y + plr.height;
+                    startY = plr.Center.Y;
                     plr.velocity.Y -= plr.gravDir * Player.jumpSpeed * 2;
                 }
-                else if (Main.myPlayer == plr.whoAmI)
+                else if (Main.myPlayer == plr.whoAmI && plr.itemAnimation % 4 == 1)
                 {
-                    if (plr.itemAnimation % 4 == 1)
-                    {
-                        Vector2 pos = new Vector2(plr.Center.X + plr.direction * (30 - plr.itemAnimation) * 9, feetY - 24);
-                        Projectile.NewProjectile(pos, plr.velocity + new Vector2(plr.direction, -2), mod.ProjectileType<Projectiles.QuantumBeam>(), item.damage, item.knockBack, plr.whoAmI);
-                    }
+                    Vector2 pos = new Vector2(plr.Center.X + plr.direction * (30 - plr.itemAnimation) * 9, startY);
+                    Projectile.NewProjectile(pos, plr.velocity.Add(plr.direction, -2), mod.ProjectileType<Projectiles.QuantumBeam>(), item.damage, item.knockBack, plr.whoAmI);
                 }
             }
             if (plr.itemAnimation == 1)

@@ -38,12 +38,11 @@ namespace Promethium.Projectiles.Minions
         }
 
         int lastPath = 0, stillTimer = 0;
-        float jumpPower = 17;
-        short maxJumpPower = 17;
+        byte maxJump = 17;
         PathFinder test = null;
-        System.Collections.Generic.IList<Point> path = null;
+        System.Collections.Generic.LinkedList<Location> path = null;
 
-        private static readonly bool PATHFINDING_AI_TEST = false;
+        private static readonly bool PATHFINDING_AI_TEST = true;
 
         public override void AI()
         {
@@ -101,7 +100,7 @@ namespace Promethium.Projectiles.Minions
                         if (++lastPath > 60 || (onGround && lastPath > 30))
                         {
                             lastPath = 0;
-                            path = test.FindPath(projectile, destPos.ToTileCoordinates(), (short)(maxJumpPower - 2), (short)(maxJumpPower - jumpPower));
+                            path = test.FindPath(projectile, destPos.ToTileCoordinates(), maxJump, 0);
                         }
                         if (path == null)
                         {
@@ -116,18 +115,28 @@ namespace Promethium.Projectiles.Minions
                         }
                         else if (path.Count > 0)
                         {
-                            Vector2 newPos = path[path.Count - 1].ToWorldCoordinates(0, 16 - projectile.height);
-                            while ((newPos - projectile.position).LengthSquared() < 24 * 24)
+                            Location newLoc = path.Last.Value;
+                            while (newLoc.Z != 0 && path.Count > 1)
                             {
-                                path.RemoveAt(path.Count - 1);
-                                if (path.Count > 0) newPos = path[path.Count - 1].ToWorldCoordinates(0, 16 - projectile.height);
+                                Location nextLoc = path.Last.Previous.Value;
+                                if (Collision.CanHitLine(projectile.position, projectile.width, projectile.height, nextLoc.Pos.ToWorldCoordinates(0, 16 - projectile.height), projectile.width, projectile.height))
+                                {
+                                    path.RemoveLast();
+                                    newLoc = nextLoc;
+                                }
+                                else break;
+                            }
+                            while ((newLoc.Pos.ToWorldCoordinates(0, 16 - projectile.height) - projectile.position).LengthSquared() < 24 * 24)
+                            {
+                                path.RemoveLast();
+                                if (path.Count > 0) newLoc = path.Last.Value;
                                 else
                                 {
-                                    newPos = destPos;
+                                    newLoc.Z = 255;
                                     break;
                                 }
                             }
-                            destPos = newPos;
+                            if (newLoc.Z != 255) destPos = newLoc.Pos.ToWorldCoordinates(0, 16 - projectile.height);
                         }
                     }
                     else path = null;
@@ -145,13 +154,11 @@ namespace Promethium.Projectiles.Minions
                     }
                     else stillTimer = 0;
                     projectile.tileCollide = true;
-
-                    if (projectile.velocity.Y == 0 && onGround) jumpPower = maxJumpPower;
-                    if (destDelta.Y < -20 && jumpPower > 0 && Math.Abs(projectile.velocity.Y) < 0.5F)
+                    
+                    if (destDelta.Y < -16 && onGround && projectile.velocity.Y == 0)
                     {
-                        float jump = Math.Max(destDelta.Y, jumpPower * -16);
+                        float jump = Math.Max(destDelta.Y, maxJump * -16);
                         projectile.velocity.Y = -(float)Math.Sqrt((jump - 8) * -0.84375F);
-                        jumpPower += jump / 16;
                     }
 
                     float xVelMin = 0.5f;
