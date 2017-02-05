@@ -66,7 +66,7 @@ namespace Promethium.Items.Weapons
                 plr.itemLocation.X -= plr.direction * 24;
                 plr.itemLocation.Y -= 16;
                 plr.itemRotation = plr.itemRotation * 0.85F + plr.direction;
-                if (plr.itemAnimation == 24)
+                if (plr.itemAnimation == (int)(24 * plr.meleeSpeed))
                 {
                     startY = plr.Center.Y;
                     plr.velocity.Y -= plr.gravDir * Player.jumpSpeed * 2;
