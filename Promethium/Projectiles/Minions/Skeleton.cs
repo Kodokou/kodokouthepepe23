@@ -8,6 +8,10 @@ namespace Promethium.Projectiles.Minions
 {
     class Skeleton : ModProjectile
     {
+        // New AI stuff
+        private static readonly bool PATHFINDING_AI_TEST = false;
+        protected AI.BaseAI ai0 = new AI.WalkingAI(16, 0.4F);
+
         public float necroDrain;
         protected int attackDist;
 
@@ -20,7 +24,7 @@ namespace Promethium.Projectiles.Minions
             projectile.timeLeft = 7200;
             projectile.minion = true;
             Main.projPet[projectile.type] = true;
-            Main.projFrames[projectile.type] = 3;
+            Main.projFrames[projectile.type] = 4;
             necroDrain = 0.00001F;
             attackDist = 40;
         }
@@ -37,13 +41,6 @@ namespace Promethium.Projectiles.Minions
             return dist > 20;
         }
 
-        int lastPath = 0, stillTimer = 0;
-        byte maxJump = 17;
-        PathFinder test = null;
-        System.Collections.Generic.LinkedList<Location> path = null;
-
-        private static readonly bool PATHFINDING_AI_TEST = true;
-
         public override void AI()
         {
             if (projectile.localAI[0] == 0)
@@ -51,7 +48,6 @@ namespace Promethium.Projectiles.Minions
                 projectile.localAI[0] = 1;
                 projectile.scale = 1 + Main.rand.NextFloat() * 0.2F;
                 SpawnEffect();
-                test = new PathFinder();
             }
             Player plr = Main.player[projectile.owner];
             if (!plr.active)
@@ -65,246 +61,71 @@ namespace Promethium.Projectiles.Minions
                 OldAI();
                 return;
             }
-            try
+            if (projectile.ai[0] == 0)
             {
-                Vector2 deltaPlr = plr.Center - projectile.Center;
-                if (Math.Abs(deltaPlr.Y) > 3600 || deltaPlr.Length() > 6000)
-                {
-                    projectile.ai[0] = 1;
-                    projectile.netUpdate = true;
-                    if (projectile.velocity.Y > 0 && deltaPlr.Y < 0) projectile.velocity.Y = 0;
-                    if (projectile.velocity.Y < 0 && deltaPlr.Y > 0) projectile.velocity.Y = 0;
-                }
-
-                if (projectile.ai[0] == 0)
-                {
-                    Vector2 destPos;
-                    Point feetPos = projectile.position.Add(0, projectile.height).ToTileCoordinates();
-                    bool onGround = false;
-                    for (int i = (projectile.width + 15) / 16 - 1; i >= 0 && !onGround; --i)
-                        onGround |= Main.tile[feetPos.X + i, feetPos.Y].IsSolid();
-                    if (plr.HasMinionRestTarget)
-                    {
-                        destPos = plr.MinionRestTargetPoint;
-                        destPos.X -= ((projectile.minionPos + 1) % 3) * 30 - 30 + 5 * projectile.minionPos / 2F * plr.direction;
-                    }
-                    else
-                    {
-                        destPos = plr.position;
-                        destPos.Y += plr.height - projectile.height - 1;
-                        destPos.X -= (20 + plr.width / 2F) * plr.direction - plr.width / 2F;
-                        destPos.X -= ((projectile.minionPos % 6) * 30 + 5 * projectile.minionPos / 2F) * plr.direction;
-                    }
-                    if ((destPos - projectile.position).LengthSquared() > 80 * 80)
-                    {
-                        if (++lastPath > 60 || (onGround && lastPath > 30))
-                        {
-                            lastPath = 0;
-                            path = test.FindPath(projectile, destPos.ToTileCoordinates(), maxJump, 0);
-                        }
-                        if (path == null)
-                        {
-                            if (plr.HasMinionRestTarget) destPos = plr.position.Add(plr.width / 2F, plr.height - projectile.height);
-                            else
-                            {
-                                //projectile.ai[0] = 1;
-                                //projectile.netUpdate = true;
-                                //if (projectile.velocity.Y > 0 && deltaPlr.Y < 0) projectile.velocity.Y = 0;
-                                //if (projectile.velocity.Y < 0 && deltaPlr.Y > 0) projectile.velocity.Y = 0;
-                            }
-                        }
-                        else if (path.Count > 0)
-                        {
-                            Location newLoc = path.Last.Value;
-                            while (newLoc.Z != 0 && path.Count > 1)
-                            {
-                                Location nextLoc = path.Last.Previous.Value;
-                                if (Collision.CanHitLine(projectile.position, projectile.width, projectile.height, nextLoc.Pos.ToWorldCoordinates(0, 16 - projectile.height), projectile.width, projectile.height))
-                                {
-                                    path.RemoveLast();
-                                    newLoc = nextLoc;
-                                }
-                                else break;
-                            }
-                            while ((newLoc.Pos.ToWorldCoordinates(0, 16 - projectile.height) - projectile.position).LengthSquared() < 24 * 24)
-                            {
-                                path.RemoveLast();
-                                if (path.Count > 0) newLoc = path.Last.Value;
-                                else
-                                {
-                                    newLoc.Z = 255;
-                                    break;
-                                }
-                            }
-                            if (newLoc.Z != 255) destPos = newLoc.Pos.ToWorldCoordinates(0, 16 - projectile.height);
-                        }
-                    }
-                    else path = null;
-                    if (lastPath % 2 == 0) Main.dust[Dust.NewDust(destPos, 1, 1, DustID.Fire)].noGravity = true;
-
-                    Vector2 destDelta = destPos - projectile.position;
-                    int moveDir = Math.Sign(destDelta.X);
-                    if (destDelta.LengthSquared() > 48 * 48 && projectile.velocity.LengthSquared() < 9 && onGround)
-                    {
-                        if (++stillTimer > 10)
-                        {
-                            stillTimer = 0;
-                            projectile.velocity += Main.rand.NextVector2CircularEdge(3, 3);
-                        }
-                    }
-                    else stillTimer = 0;
-                    projectile.tileCollide = true;
-                    
-                    if (destDelta.Y < -16 && onGround && projectile.velocity.Y == 0)
-                    {
-                        float jump = Math.Max(destDelta.Y, maxJump * -16);
-                        projectile.velocity.Y = -(float)Math.Sqrt((jump - 8) * -0.84375F);
-                    }
-
-                    float xVelMin = 0.5f;
-                    float xVelMax = 5;
-                    if (xVelMax < Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y))
-                    {
-                        xVelMax = Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y);
-                        xVelMin = 0.7f;
-                    }
-                    if (moveDir == -1)
-                    {
-                        if (projectile.velocity.X > -4F)
-                            projectile.velocity.X = projectile.velocity.X - xVelMin;
-                        else projectile.velocity.X = projectile.velocity.X - 0.1F;
-                    }
-                    else if (moveDir == 1)
-                    {
-                        if (projectile.velocity.X < 4F)
-                            projectile.velocity.X = projectile.velocity.X + xVelMin;
-                        else projectile.velocity.X = projectile.velocity.X + 0.1F;
-                    }
-                    else
-                    {
-                        projectile.velocity.X = projectile.velocity.X * 0.9f;
-                        if (Math.Abs(projectile.velocity.X) < xVelMin * 2)
-                            projectile.velocity.X = 0;
-                    }
-                    bool colliding = false;
-                    if (moveDir != 0)
-                    {
-                        int projX = (int)(projectile.position.X + projectile.width / 2) / 16 + moveDir + (int)projectile.velocity.X;
-                        int projY = (int)projectile.position.Y / 16;
-                        for (int i = projY; i < projY + projectile.height / 16 + 1; ++i)
-                            if (WorldGen.SolidTile(projX, i)) colliding = true;
-                    }
-                    Collision.StepUp(ref projectile.position, ref projectile.velocity, projectile.width, projectile.height, ref projectile.stepSpeed, ref projectile.gfxOffY, 1, false, 0);
-                    if (projectile.velocity.Y == 0)
-                        if (colliding)
-                        {
-                            for (int i = 0; i < 3; ++i)
-                            {
-                                int projX = (int)(projectile.position.X + i * projectile.width / 2) / 16;
-                                int projY = (int)(projectile.position.Y + projectile.height) / 16;
-                                Tile t = Main.tile[projX, projY];
-                                if (t.IsSolid() && !t.IsTopSolid())
-                                    try
-                                    {
-                                        projX = (int)(projectile.position.X + projectile.width / 2) / 16;
-                                        projY = (int)(projectile.position.Y + projectile.height / 2) / 16;
-                                        projX += moveDir + (int)projectile.velocity.X;
-                                        if (!WorldGen.SolidTile(projX, projY - 1) && !WorldGen.SolidTile(projX, projY - 2))
-                                            projectile.velocity.Y = -5.1f;
-                                        else if (!WorldGen.SolidTile(projX, projY - 2))
-                                            projectile.velocity.Y = -7.1f;
-                                        else if (WorldGen.SolidTile(projX, projY - 5))
-                                            projectile.velocity.Y = -11.1f;
-                                        else if (WorldGen.SolidTile(projX, projY - 4))
-                                            projectile.velocity.Y = -10.1f;
-                                        else projectile.velocity.Y = -9.1f;
-                                    }
-                                    catch { projectile.velocity.Y = -9.1f; }
-                            }
-                        }
-                    if (projectile.velocity.X > xVelMax) projectile.velocity.X = xVelMax;
-                    if (projectile.velocity.X < -xVelMax) projectile.velocity.X = -xVelMax;
-                    if (projectile.velocity.X < 0) projectile.direction = -1;
-                    if (projectile.velocity.X > 0) projectile.direction = 1;
-                    if (projectile.velocity.X > xVelMin && moveDir == 1) projectile.direction = 1;
-                    if (projectile.velocity.X < -xVelMin && moveDir == -1) projectile.direction = -1;
-                    projectile.spriteDirection = projectile.direction;
-                    projectile.rotation = 0;
-                    projectile.alpha = 0;
-                    if (projectile.velocity.Y == 0 && Math.Abs(projectile.velocity.X) >= 0.5f)
-                    {
-                        projectile.frameCounter += (int)Math.Abs(projectile.velocity.X);
-                        if (++projectile.frameCounter > 10)
-                        {
-                            ++projectile.frame;
-                            projectile.frameCounter = 0;
-                        }
-                        if (projectile.frame > 2) projectile.frame = 0;
-                    }
-                    else
-                    {
-                        projectile.frameCounter = 0;
-                        projectile.frame = 0;
-                    }
-                    projectile.velocity.Y += 0.4F;
-                    if (projectile.velocity.Y > 10) projectile.velocity.Y = 10;
-                }
-                else if (projectile.ai[0] == 1)
-                {
-                    projectile.tileCollide = false;
-                    float maxDist = 10;
-                    if (maxDist < Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y))
-                        maxDist = Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y);
-                    float plrDist = deltaPlr.Length();
-                    if (plrDist > 2000)
-                    {
-                        SpawnEffect();
-                        projectile.position = plr.Center - new Vector2(projectile.width, projectile.height) / 2;
-                        SpawnEffect();
-                    }
-                    if (plrDist < 200 && plr.velocity.Y == 0 && projectile.position.Y + projectile.height <= plr.position.Y + plr.height && !Collision.SolidCollision(projectile.position, projectile.width, projectile.height))
-                    {
-                        projectile.ai[0] = 0;
-                        projectile.netUpdate = true;
-                        if (projectile.velocity.Y < -6) projectile.velocity.Y = -6;
-                    }
-                    if (plrDist >= 60)
-                    {
-                        deltaPlr.Normalize();
-                        deltaPlr *= maxDist;
-                        if (projectile.velocity.X < deltaPlr.X)
-                        {
-                            projectile.velocity.X = projectile.velocity.X + 0.2F;
-                            if (projectile.velocity.X < 0)
-                                projectile.velocity.X = projectile.velocity.X + 0.3F;
-                        }
-                        if (projectile.velocity.X > deltaPlr.X)
-                        {
-                            projectile.velocity.X = projectile.velocity.X - 0.2F;
-                            if (projectile.velocity.X > 0)
-                                projectile.velocity.X = projectile.velocity.X - 0.3f;
-                        }
-                        if (projectile.velocity.Y < deltaPlr.Y)
-                        {
-                            projectile.velocity.Y = projectile.velocity.Y + 0.2F;
-                            if (projectile.velocity.Y < 0)
-                                projectile.velocity.Y = projectile.velocity.Y + 0.3F;
-                        }
-                        if (projectile.velocity.Y > deltaPlr.Y)
-                        {
-                            projectile.velocity.Y = projectile.velocity.Y - 0.2F;
-                            if (projectile.velocity.Y > 0)
-                                projectile.velocity.Y = projectile.velocity.Y - 0.3F;
-                        }
-                    }
-                    if (projectile.velocity.X != 0) projectile.spriteDirection = Math.Sign(projectile.velocity.X);
-                    projectile.frameCounter = 0;
-                    projectile.frame = 1;
-                    projectile.rotation = projectile.velocity.X / 10;
-                    projectile.alpha = 128;
-                }
+                ai0.AI(projectile);
             }
-            catch (Exception ex) { ErrorLogger.Log(ex.ToString()); throw; }
+            else if (projectile.ai[0] == 1)
+            {
+                //ai1.AI(projectile);
+
+                Vector2 deltaPlr = projectile.Center - plr.Center;
+                projectile.tileCollide = false;
+                float maxDist = 10;
+                if (maxDist < Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y))
+                    maxDist = Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y);
+                float plrDist = deltaPlr.Length();
+                if (plrDist > 2000)
+                {
+                    SpawnEffect();
+                    projectile.position = plr.Center - new Vector2(projectile.width, projectile.height) / 2;
+                    SpawnEffect();
+                }
+                if (plrDist < 200 && plr.velocity.Y == 0 && projectile.position.Y + projectile.height <= plr.position.Y + plr.height && !Collision.SolidCollision(projectile.position, projectile.width, projectile.height))
+                {
+                    projectile.ai[0] = 0;
+                    projectile.netUpdate = true;
+                    if (projectile.velocity.Y < -6) projectile.velocity.Y = -6;
+                }
+                if (plrDist >= 60)
+                {
+                    deltaPlr.Normalize();
+                    deltaPlr *= maxDist;
+                    if (projectile.velocity.X < deltaPlr.X)
+                    {
+                        projectile.velocity.X = projectile.velocity.X + 0.2F;
+                        if (projectile.velocity.X < 0)
+                            projectile.velocity.X = projectile.velocity.X + 0.3F;
+                    }
+                    if (projectile.velocity.X > deltaPlr.X)
+                    {
+                        projectile.velocity.X = projectile.velocity.X - 0.2F;
+                        if (projectile.velocity.X > 0)
+                            projectile.velocity.X = projectile.velocity.X - 0.3f;
+                    }
+                    if (projectile.velocity.Y < deltaPlr.Y)
+                    {
+                        projectile.velocity.Y = projectile.velocity.Y + 0.2F;
+                        if (projectile.velocity.Y < 0)
+                            projectile.velocity.Y = projectile.velocity.Y + 0.3F;
+                    }
+                    if (projectile.velocity.Y > deltaPlr.Y)
+                    {
+                        projectile.velocity.Y = projectile.velocity.Y - 0.2F;
+                        if (projectile.velocity.Y > 0)
+                            projectile.velocity.Y = projectile.velocity.Y - 0.3F;
+                    }
+                }
+                if (projectile.velocity.X != 0) projectile.spriteDirection = Math.Sign(projectile.velocity.X);
+                projectile.frameCounter = 0;
+                projectile.frame = 3;
+                projectile.rotation = projectile.velocity.ToRotation();// projectile.velocity.X / 10;
+                projectile.alpha = 128;
+            }
+            else if (projectile.ai[0] == 2)
+            {
+                //ai2.AI(projectile);
+            }
         }
 
         private void OldAI()

@@ -32,14 +32,14 @@ namespace Promethium.Items.Weapons
 
         public override bool AltFunctionUse(Player plr)
         {
-            if (plr.ownedProjectileCounts[mod.ProjectileType<Projectiles.ChronoTag>()] > 0)
+            if (plr.ownedProjectileCounts[mod.ProjectileType<Projectiles.ChronoPrism>()] > 0)
             {
                 int shortestTimeLeft = int.MaxValue;
                 Projectile shortest = Main.projectile[0];
                 for (int i = 0; i < Main.maxProjectiles; i++)
                 {
                     Projectile p = Main.projectile[i];
-                    if (p.active && p.type == mod.ProjectileType<Projectiles.ChronoTag>() && p.owner == plr.whoAmI && p.timeLeft < shortestTimeLeft)
+                    if (p.active && p.type == mod.ProjectileType<Projectiles.ChronoPrism>() && p.owner == plr.whoAmI && p.timeLeft < shortestTimeLeft)
                     {
                         shortestTimeLeft = p.timeLeft;
                         shortest = p;
@@ -66,7 +66,7 @@ namespace Promethium.Items.Weapons
                 plr.itemLocation.X -= plr.direction * 24;
                 plr.itemLocation.Y -= 16;
                 plr.itemRotation = plr.itemRotation * 0.85F + plr.direction;
-                if (plr.itemAnimation == 24)
+                if (plr.itemAnimation == (int)(24 * plr.meleeSpeed))
                 {
                     startY = plr.Center.Y;
                     plr.velocity.Y -= plr.gravDir * Player.jumpSpeed * 2;

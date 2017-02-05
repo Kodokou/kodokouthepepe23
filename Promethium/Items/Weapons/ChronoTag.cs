@@ -11,7 +11,7 @@ namespace Promethium.Items.Weapons
             item.width = 34;
             item.height = 34;
             item.toolTip = "Saves your current state in time";
-            item.shoot = mod.ProjectileType<Projectiles.ChronoTag>();
+            item.shoot = mod.ProjectileType<Projectiles.ChronoPrism>();
             item.shootSpeed = 1;
             item.summon = true;
             item.useStyle = 4;

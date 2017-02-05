@@ -41,11 +41,8 @@ namespace Promethium.Items.Weapons
                 // TODO: Remove pathfinding debug function
                 try
                 {
-                    PathFinder a = new PathFinder() { Debug = true };
-                    var path = a.FindPath(plr, (Main.MouseScreen + Main.screenPosition).ToTileCoordinates(), 17);
-                    if (path != null)
-                        foreach (Location l in path)
-                            Main.dust[Dust.NewDust(l.Pos.ToWorldCoordinates(), 1, 1, DustID.Fire)].noGravity = true;
+                    PathFinder pf = new PathFinder() { Debug = true };
+                    pf.FindPath(plr, (Main.MouseScreen + Main.screenPosition).ToTileCoordinates(), 17);
                 }
                 catch (System.Exception ex) { ErrorLogger.Log(ex.ToString()); }
                 /* TODO: Restore after debug ends
@@ -67,8 +64,8 @@ namespace Promethium.Items.Weapons
                     necroCost = 5;
                     item.mana = 10;
                 }
-                */
                 CombatText.NewText(new Rectangle((int)plr.position.X, (int)plr.position.Y, plr.width, plr.height), Color.LightGray, "Minion: Skeleton " + summon, false, false);
+                */            
                 rightTime = 30;
             }
             return false;

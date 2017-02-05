@@ -150,47 +150,45 @@ namespace Promethium
                         return null;
                     }
                     
-                    for (var i = mDiagonals ? 7 : 3; i >= 0; --i)
+                    for (int i = mDiagonals ? 7 : 3; i >= 0; --i)
                     {
                         mNewLocation = new Point(mLocation.Pos.X + mDirection[i, 0], mLocation.Pos.Y + mDirection[i, 1]);
 
-                        var onGround = false;
-                        var atCeiling = false;
+                        bool onGround = false, atCeiling = false;
 
                         if (CollisionAt(new Point(mNewLocation.X, mNewLocation.Y), en)) continue;
-                        
-                        if (Main.tile[mNewLocation.X, mNewLocation.Y + 1].IsSolid()) onGround = true;
+                        else if (Main.tile[mNewLocation.X, mNewLocation.Y + 1].IsSolid()) onGround = true;
                         else if (CollisionAt(new Point(mNewLocation.X, mNewLocation.Y - 1), en)) atCeiling = true;
 
-                        var jumpLength = nodes[mLocation.Pos][mLocation.Z].Jump;
-                        byte newJumpLength = jumpLength;
+                        byte jump = nodes[mLocation.Pos][mLocation.Z].Jump;
+                        byte newJump = jump;
 
                         if (atCeiling)
                         {
-                            if (mNewLocation.X != mLocation.Pos.X) newJumpLength = (byte)Math.Max(jumpHeight * 2 + 1, jumpLength + 1);
-                            else newJumpLength = (byte)Math.Max(jumpHeight * 2, jumpLength + 2);
+                            if (mNewLocation.X != mLocation.Pos.X) newJump = (byte)Math.Max(jumpHeight * 2 + 1, jump + 1);
+                            else newJump = (byte)Math.Max(jumpHeight * 2, jump + 2);
                         }
-                        else if (onGround) newJumpLength = 0;
+                        else if (onGround) newJump = 0;
                         else if (mNewLocation.Y < mLocation.Pos.Y)
                         {
-                            if (jumpLength < 2) newJumpLength = 3;
-                            else if (jumpLength % 2 == 0) newJumpLength = (byte)(jumpLength + 2);
-                            else newJumpLength = (byte)(jumpLength + 1);
+                            if (jump < 2) newJump = 3;
+                            else if (jump % 2 == 0) newJump = (byte)(jump + 2);
+                            else newJump = (byte)(jump + 1);
                         }
                         else if (mNewLocation.Y > mLocation.Pos.Y)
                         {
-                            if (jumpLength % 2 == 0) newJumpLength = (byte)Math.Max(jumpHeight * 2, jumpLength + 2);
-                            else newJumpLength = (byte)Math.Max(jumpHeight * 2, jumpLength + 1);
+                            if (jump % 2 == 0) newJump = (byte)Math.Max(jumpHeight * 2, jump + 2);
+                            else newJump = (byte)Math.Max(jumpHeight * 2, jump + 1);
                         }
                         else if (!onGround && mNewLocation.X != mLocation.Pos.X)
-                            newJumpLength = (byte)(jumpLength + 1);
+                            newJump = (byte)(jump + 1);
 
-                        if (jumpLength >= 0 && jumpLength % 2 != 0 && mLocation.Pos.X != mNewLocation.X) continue;
-                        if (jumpLength >= jumpHeight * 2 && mNewLocation.Y < mLocation.Pos.Y) continue;
-                        if (newJumpLength >= jumpHeight * 2 + 6 && mNewLocation.X != mLocation.Pos.X && (newJumpLength - (jumpHeight * 2 + 6)) % 8 != 3) continue;
+                        if (jump >= 0 && jump % 2 != 0 && mLocation.Pos.X != mNewLocation.X) continue;
+                        if (jump >= jumpHeight * 2 && mNewLocation.Y < mLocation.Pos.Y) continue;
+                        if (newJump >= jumpHeight * 2 + 6 && mNewLocation.X != mLocation.Pos.X && (newJump - (jumpHeight * 2 + 6)) % 8 != 3) continue;
 
-                        float newG = nodes[mLocation.Pos][mLocation.Z].G + 1;// + newJumpLength / 4F;
-
+                        float newG = nodes[mLocation.Pos][mLocation.Z].G + 1 + 2 * newJump / (float)jumpHeight;
+                        
                         if (GetNode(mNewLocation).Count > 0)
                         {
                             int lowestJump = short.MaxValue;
@@ -201,29 +199,30 @@ namespace Promethium
                                 if (nodes[mNewLocation][j].Jump % 2 == 0 && nodes[mNewLocation][j].Jump < jumpHeight * 2 + 6) couldMoveSideways = true;
                             }
 
-                            if (lowestJump <= newJumpLength && (newJumpLength % 2 != 0 || newJumpLength >= jumpHeight * 2 + 6 || couldMoveSideways))
+                            if (lowestJump <= newJump && (newJump % 2 != 0 || newJump >= jumpHeight * 2 + 6 || couldMoveSideways))
                                 continue;
                         }
 
                         Point dist = new Point(end.X - mNewLocation.X, end.Y - mNewLocation.Y);
+
                         // Manhattan: mHEstimate * (Math.Abs(dist.X) + Math.Abs(dist.Y));
                         // MaxDXDY: mHEstimate * (Math.Max(Math.Abs(dist.X), Math.Abs(dist.Y)));
                         // DiagonalShortCut:
-                        //     var h_diagonal = Math.Min(Math.Abs(dist.X), Math.Abs(dist.Y));
-                        //     var h_straight = (Math.Abs(dist.X) + Math.Abs(dist.Y));
+                        //     float h_diagonal = Math.Min(Math.Abs(dist.X), Math.Abs(dist.Y));
+                        //     float h_straight = Math.Abs(dist.X) + Math.Abs(dist.Y);
                         //     mHEstimate * 2 * h_diagonal + mHEstimate * (h_straight - 2 * h_diagonal);
+                        // Euclidean: mHEstimate * (float)Math.Sqrt(dist.X * dist.X + dist.Y * dist.Y);
                         // EuclideanNoSQR: mHEstimate * (float)(dist.X * dist.X + dist.Y * dist.Y);
                         // Custom:
-                        //     var dxy = new Point(Math.Abs(dist.X), Math.Abs(dist.Y));
-                        //     var Orthogonal = Math.Abs(dxy.X - dxy.Y);
-                        //     var Diagonal = Math.Abs(((dxy.X + dxy.Y) - Orthogonal) / 2);
+                        //     Point dxy = new Point(Math.Abs(dist.X), Math.Abs(dist.Y));
+                        //     float Orthogonal = Math.Abs(dxy.X - dxy.Y);
+                        //     float Diagonal = Math.Abs(((dxy.X + dxy.Y) - Orthogonal) / 2);
                         //     mHEstimate * (Diagonal + Orthogonal + dxy.X + dxy.Y);
-
-                        // Euclidean:
-                        float newH = HEstimate * (float)Math.Sqrt(dist.X * dist.X + dist.Y * dist.Y);
+                        
+                        float newH = HEstimate * (Math.Abs(dist.X) + Math.Abs(dist.Y));
 
                         Node newNode = new Node();
-                        newNode.Jump = newJumpLength;
+                        newNode.Jump = newJump;
                         newNode.PPos = mLocation.Pos;
                         newNode.PZ = mLocation.Z;
                         newNode.G = newG;
@@ -254,7 +253,7 @@ namespace Promethium
 
                     while (fNode.Pos.X != fNodeTmp.PPos.X || fNode.Pos.Y != fNodeTmp.PPos.Y)
                     {
-                        var fNextNodeTmp = nodes[fNodeTmp.PPos][fNodeTmp.PZ];
+                        Node fNextNodeTmp = nodes[fNodeTmp.PPos][fNodeTmp.PZ];
 
                         if (ret.Count == 0
                             || (Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsSolid() && Main.tile[fNode.Pos.X, fNode.Pos.Y + 1].IsTopSolid())
