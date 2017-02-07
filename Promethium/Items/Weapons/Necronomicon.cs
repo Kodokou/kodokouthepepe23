@@ -41,7 +41,7 @@ namespace Promethium.Items.Weapons
                 // TODO: Remove pathfinding debug function
                 try
                 {
-                    PathFinder pf = new PathFinder() { Debug = true };
+                    AI.Astar.PathFinder pf = new AI.Astar.PathFinder() { Debug = true };
                     pf.FindPath(plr, (Main.MouseScreen + Main.screenPosition).ToTileCoordinates(), 17);
                 }
                 catch (System.Exception ex) { ErrorLogger.Log(ex.ToString()); }
