@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Microsoft.Xna.Framework;
+using Promethium.AI.Astar;
 
 namespace Promethium.AI
 {
@@ -87,10 +88,11 @@ namespace Promethium.AI
             int moveDir = Math.Sign(destDelta.X);
             aiu.SetTileCollide(true);
 
-            if (destDelta.Y < -16 && onGround && aiu.entity.velocity.Y == 0)
+            Vector2 vel = aiu.entity.velocity;
+            if (destDelta.Y < -16 && onGround && vel.Y == 0)
             {
                 float jump = Math.Max(destDelta.Y, maxJump * -16);
-                aiu.entity.velocity.Y = -(float)Math.Sqrt((jump - 8) * -0.84375F);
+                vel.Y = -(float)Math.Sqrt((jump - 8) * -0.84375F);
             }
 
             float xVelMin = 0.5f;
@@ -102,32 +104,29 @@ namespace Promethium.AI
             }
             if (moveDir == -1)
             {
-                if (aiu.entity.velocity.X > -4F)
-                    aiu.entity.velocity.X = aiu.entity.velocity.X - xVelMin;
-                else aiu.entity.velocity.X = aiu.entity.velocity.X - 0.1F;
+                if (vel.X > -4) vel.X -= xVelMin;
+                else vel.X -= 0.1F;
             }
             else if (moveDir == 1)
             {
-                if (aiu.entity.velocity.X < 4F)
-                    aiu.entity.velocity.X = aiu.entity.velocity.X + xVelMin;
-                else aiu.entity.velocity.X = aiu.entity.velocity.X + 0.1F;
+                if (vel.X < 4) vel.X += xVelMin;
+                else vel.X += 0.1F;
             }
             else
             {
-                aiu.entity.velocity.X = aiu.entity.velocity.X * 0.9f;
-                if (Math.Abs(aiu.entity.velocity.X) < xVelMin * 2)
-                    aiu.entity.velocity.X = 0;
+                vel.X *= 0.9f;
+                if (Math.Abs(vel.X) < xVelMin * 2) vel.X = 0;
             }
             bool colliding = false;
             if (moveDir != 0)
             {
-                int projX = (int)(aiu.entity.position.X + aiu.entity.width / 2) / 16 + moveDir + (int)aiu.entity.velocity.X;
+                int projX = (int)(aiu.entity.position.X + aiu.entity.width / 2) / 16 + moveDir + (int)vel.X;
                 int projY = (int)aiu.entity.position.Y / 16;
                 for (int i = projY; i < projY + aiu.entity.height / 16 + 1; ++i)
                     if (WorldGen.SolidTile(projX, i)) colliding = true;
             }
             aiu.CollisionStepUp();
-            if (aiu.entity.velocity.Y == 0)
+            if (vel.Y == 0)
                 if (colliding)
                 {
                     for (int i = 0; i < 3; ++i)
@@ -140,29 +139,30 @@ namespace Promethium.AI
                             {
                                 projX = (int)(aiu.entity.position.X + aiu.entity.width / 2) / 16;
                                 projY = (int)(aiu.entity.position.Y + aiu.entity.height / 2) / 16;
-                                projX += moveDir + (int)aiu.entity.velocity.X;
+                                projX += moveDir + (int)(vel.X / 16);
                                 if (!WorldGen.SolidTile(projX, projY - 1) && !WorldGen.SolidTile(projX, projY - 2))
-                                    aiu.entity.velocity.Y = -5.1f;
+                                    vel.Y = -5.1f;
                                 else if (!WorldGen.SolidTile(projX, projY - 2))
-                                    aiu.entity.velocity.Y = -7.1f;
+                                    vel.Y = -7.1f;
                                 else if (WorldGen.SolidTile(projX, projY - 5))
-                                    aiu.entity.velocity.Y = -11.1f;
+                                    vel.Y = -11.1f;
                                 else if (WorldGen.SolidTile(projX, projY - 4))
-                                    aiu.entity.velocity.Y = -10.1f;
-                                else aiu.entity.velocity.Y = -9.1f;
+                                    vel.Y = -10.1f;
+                                else vel.Y = -9.1f;
                             }
-                            catch { aiu.entity.velocity.Y = -9.1f; }
+                            catch { vel.Y = -9.1f; }
                     }
                 }
-            if (aiu.entity.velocity.X > xVelMax) aiu.entity.velocity.X = xVelMax;
-            if (aiu.entity.velocity.X < -xVelMax) aiu.entity.velocity.X = -xVelMax;
-            if (aiu.entity.velocity.X < 0) aiu.entity.direction = -1;
-            if (aiu.entity.velocity.X > 0) aiu.entity.direction = 1;
-            if (aiu.entity.velocity.X > xVelMin && moveDir == 1) aiu.entity.direction = 1;
-            if (aiu.entity.velocity.X < -xVelMin && moveDir == -1) aiu.entity.direction = -1;
+            if (vel.X > xVelMax) vel.X = xVelMax;
+            if (vel.X < -xVelMax) vel.X = -xVelMax;
+            if (vel.X < 0) aiu.entity.direction = -1;
+            if (vel.X > 0) aiu.entity.direction = 1;
+            if (vel.X > xVelMin && moveDir == 1) aiu.entity.direction = 1;
+            if (vel.X < -xVelMin && moveDir == -1) aiu.entity.direction = -1;
             aiu.SetRotation(0);
-            aiu.entity.velocity.Y += 0.4F;
-            if (aiu.entity.velocity.Y > 10) aiu.entity.velocity.Y = 10;
+            vel.Y += 0.4F;
+            if (vel.Y > 10) vel.Y = 10;
+            aiu.entity.velocity = vel;
             return true;
         }
     }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Terraria;
 using Microsoft.Xna.Framework;
 
-namespace Promethium
+namespace Promethium.AI.Astar
 {
     public struct Location
     {

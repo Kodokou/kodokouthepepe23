@@ -9,7 +9,7 @@ namespace Promethium.Projectiles.Minions
 {
     class Skeleton : ModProjectile
     {
-        private static readonly bool NEW_AI_TEST = false;
+        public static bool NEW_AI_TEST = false;
         protected BaseAI[] aiArr = new BaseAI[0];
 
         public float necroDrain;

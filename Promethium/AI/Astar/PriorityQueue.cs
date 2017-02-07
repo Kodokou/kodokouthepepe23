@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Promethium
+namespace Promethium.AI.Astar
 {
     public class PriorityQueue<T>
     {
