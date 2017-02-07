@@ -6,9 +6,9 @@ namespace Promethium.AI
     {
         /// <summary>Executes AI logic on the specified Entity</summary>
         /// <returns>True to continue using this AI, false otherwise</returns>
-        public abstract bool AI(Entity en);
+        public abstract bool AI(AIUser aiu);
 
         /// <summary>Called to check prerequisites for this AI</summary>
-        public abstract bool CanStart(Entity en);
+        public abstract bool CanStart(AIUser aiu);
     }
 }

@@ -3,17 +3,16 @@ using Terraria.ID;
 using Terraria;
 using Microsoft.Xna.Framework;
 using System;
+using Promethium.AI;
 
 namespace Promethium.Projectiles.Minions
 {
     class Skeleton : ModProjectile
     {
-        // New AI stuff
-        private static readonly bool PATHFINDING_AI_TEST = false;
-        protected AI.BaseAI ai0 = new AI.WalkingAI(16, 0.4F);
+        private static readonly bool NEW_AI_TEST = false;
+        protected BaseAI[] aiArr = new BaseAI[0];
 
         public float necroDrain;
-        protected int attackDist;
 
         public override void SetDefaults()
         {
@@ -26,7 +25,11 @@ namespace Promethium.Projectiles.Minions
             Main.projPet[projectile.type] = true;
             Main.projFrames[projectile.type] = 4;
             necroDrain = 0.00001F;
-            attackDist = 40;
+
+            aiArr = new BaseAI[3];
+            aiArr[0] = new LeapAttackAI() { startDist = 40 };
+            aiArr[1] = new GhostFollowAI() { startDist = 1600 };
+            aiArr[2] = new WalkingAI() { maxJump = 16 };
         }
 
         public override bool Autoload(ref string name, ref string texture)
@@ -56,76 +59,57 @@ namespace Promethium.Projectiles.Minions
                 return;
             }
             if (!plr.dead) projectile.timeLeft = 2;
-            if (!PATHFINDING_AI_TEST)
+            if ((plr.Center - projectile.Center).LengthSquared() > 2000 * 2000)
+            {
+                SpawnEffect();
+                projectile.position = plr.Center - new Vector2(projectile.width * plr.direction, projectile.height / 2);
+                SpawnEffect();
+            }
+
+            if (!NEW_AI_TEST)
             {
                 OldAI();
                 return;
             }
-            if (projectile.ai[0] == 0)
-            {
-                ai0.AI(projectile);
-            }
-            else if (projectile.ai[0] == 1)
-            {
-                //ai1.AI(projectile);
 
-                Vector2 deltaPlr = projectile.Center - plr.Center;
-                projectile.tileCollide = false;
-                float maxDist = 10;
-                if (maxDist < Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y))
-                    maxDist = Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y);
-                float plrDist = deltaPlr.Length();
-                if (plrDist > 2000)
+            AIUser aiu = new AI.Entities.AI_Projectile(projectile);
+            byte aiType = aiu.GetAI();
+            bool result = aiArr[aiType].AI(aiu);
+            if (aiType == 2)
+            {
+                projectile.spriteDirection = projectile.direction;
+                projectile.alpha = 0;
+                if (projectile.velocity.Y == 0 && Math.Abs(projectile.velocity.X) >= 0.5f)
                 {
-                    SpawnEffect();
-                    projectile.position = plr.Center - new Vector2(projectile.width, projectile.height) / 2;
-                    SpawnEffect();
+                    projectile.frameCounter += (int)Math.Abs(projectile.velocity.X);
+                    if (++projectile.frameCounter > 10)
+                    {
+                        ++projectile.frame;
+                        projectile.frameCounter = 0;
+                    }
+                    if (projectile.frame > 2) projectile.frame = 0;
                 }
-                if (plrDist < 200 && plr.velocity.Y == 0 && projectile.position.Y + projectile.height <= plr.position.Y + plr.height && !Collision.SolidCollision(projectile.position, projectile.width, projectile.height))
+                else
                 {
-                    projectile.ai[0] = 0;
-                    projectile.netUpdate = true;
-                    if (projectile.velocity.Y < -6) projectile.velocity.Y = -6;
+                    projectile.frameCounter = 0;
+                    projectile.frame = 0;
                 }
-                if (plrDist >= 60)
-                {
-                    deltaPlr.Normalize();
-                    deltaPlr *= maxDist;
-                    if (projectile.velocity.X < deltaPlr.X)
-                    {
-                        projectile.velocity.X = projectile.velocity.X + 0.2F;
-                        if (projectile.velocity.X < 0)
-                            projectile.velocity.X = projectile.velocity.X + 0.3F;
-                    }
-                    if (projectile.velocity.X > deltaPlr.X)
-                    {
-                        projectile.velocity.X = projectile.velocity.X - 0.2F;
-                        if (projectile.velocity.X > 0)
-                            projectile.velocity.X = projectile.velocity.X - 0.3f;
-                    }
-                    if (projectile.velocity.Y < deltaPlr.Y)
-                    {
-                        projectile.velocity.Y = projectile.velocity.Y + 0.2F;
-                        if (projectile.velocity.Y < 0)
-                            projectile.velocity.Y = projectile.velocity.Y + 0.3F;
-                    }
-                    if (projectile.velocity.Y > deltaPlr.Y)
-                    {
-                        projectile.velocity.Y = projectile.velocity.Y - 0.2F;
-                        if (projectile.velocity.Y > 0)
-                            projectile.velocity.Y = projectile.velocity.Y - 0.3F;
-                    }
-                }
+            }
+            else
+            {
                 if (projectile.velocity.X != 0) projectile.spriteDirection = Math.Sign(projectile.velocity.X);
                 projectile.frameCounter = 0;
-                projectile.frame = 3;
-                projectile.rotation = projectile.velocity.ToRotation();// projectile.velocity.X / 10;
-                projectile.alpha = 128;
+                projectile.frame = aiType * -2 + 3;
+                projectile.alpha = aiType * 128;
             }
-            else if (projectile.ai[0] == 2)
-            {
-                //ai2.AI(projectile);
-            }
+            if (!result)
+                for (byte i = 0; i < aiArr.Length; ++i)
+                    if (aiArr[i].CanStart(aiu))
+                    {
+                        aiu.SetAI(i);
+                        break;
+                    }
+            aiu.SaveData();
         }
 
         private void OldAI()
@@ -267,7 +251,7 @@ namespace Promethium.Projectiles.Minions
                         else if (deltaY < 380) projectile.velocity.Y = -18;
                     }
                 }
-                if (targetDist < attackDist && !Attack(target, targetDist))
+                if (targetDist < 40 && !Attack(target, targetDist))
                 {
                     projectile.ai[0] = 2;
                     projectile.ai[1] = 15;

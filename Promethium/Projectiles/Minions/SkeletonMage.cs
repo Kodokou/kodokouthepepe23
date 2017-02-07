@@ -13,7 +13,7 @@ namespace Promethium.Projectiles.Minions
             projectile.name = "Skeleton Mage";
             item = Main.itemTexture[ItemID.RubyStaff];
             necroDrain = 0.001F;
-            attackDist = 300;
+            //attackDist = 300;
         }
 
         public override bool Attack(NPC target, float dist)

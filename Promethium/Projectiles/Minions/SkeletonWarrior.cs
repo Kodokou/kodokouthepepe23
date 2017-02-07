@@ -17,7 +17,7 @@ namespace Promethium.Projectiles.Minions
             projectile.penetrate = -1;
             item = Main.itemTexture[ItemID.BoneSword];
             necroDrain = 0.00025F;
-            attackDist = 20;
+            //attackDist = 20;
         }
 
         public override bool Attack(NPC target, float dist)
