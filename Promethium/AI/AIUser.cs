@@ -31,9 +31,9 @@ namespace Promethium.AI
 
         public abstract void SaveData();
 
-        public short GetIntData() { return BitConverter.ToInt16(data, 1); }
+        public short GetI16Data() { return BitConverter.ToInt16(data, 1); }
 
-        public void SetIntData(short value) { BitConverter.GetBytes(value).CopyTo(data, 1); }
+        public void SetI16Data(short value) { BitConverter.GetBytes(value).CopyTo(data, 1); }
 
         public byte GetAI() { return data[0]; }
 

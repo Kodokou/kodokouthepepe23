@@ -163,12 +163,12 @@ namespace Promethium.AI.Astar
                         byte jump = nodes[mLocation.Pos][mLocation.Z].Jump;
                         byte newJump = jump;
 
-                        if (atCeiling)
+                        if (onGround) newJump = 0;
+                        else if (atCeiling)
                         {
                             if (mNewLocation.X != mLocation.Pos.X) newJump = (byte)Math.Max(jumpHeight * 2 + 1, jump + 1);
                             else newJump = (byte)Math.Max(jumpHeight * 2, jump + 2);
                         }
-                        else if (onGround) newJump = 0;
                         else if (mNewLocation.Y < mLocation.Pos.Y)
                         {
                             if (jump < 2) newJump = 3;
@@ -187,7 +187,7 @@ namespace Promethium.AI.Astar
                         if (jump >= jumpHeight * 2 && mNewLocation.Y < mLocation.Pos.Y) continue;
                         if (newJump >= jumpHeight * 2 + 6 && mNewLocation.X != mLocation.Pos.X && (newJump - (jumpHeight * 2 + 6)) % 8 != 3) continue;
 
-                        float newG = nodes[mLocation.Pos][mLocation.Z].G + 1 + 2 * newJump / (float)jumpHeight;
+                        float newG = nodes[mLocation.Pos][mLocation.Z].G + 1 + 3 * newJump / (float)jumpHeight;
                         
                         if (GetNode(mNewLocation).Count > 0)
                         {
@@ -258,7 +258,7 @@ namespace Promethium.AI.Astar
                         if (ret.Count == 0
                             || (Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsSolid() && Main.tile[fNode.Pos.X, fNode.Pos.Y + 1].IsTopSolid())
                             || (Main.tile[fNode.Pos.X, fNode.Pos.Y + 1].IsSolid() && Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsTopSolid())
-                    //      || fNodeTmp.Jump == 3
+                            || fNodeTmp.Jump == 3
                             || (fNextNodeTmp.Jump != 0 && fNodeTmp.Jump == 0)                                                                                                       
                             || (fNodeTmp.Jump == 0 && fPrevNodeTmp.Jump != 0)                                                                                        
                             || (fNode.Pos.Y > ret.Last.Value.Pos.Y && fNode.Pos.Y > fNodeTmp.PPos.Y)

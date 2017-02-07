@@ -117,5 +117,10 @@ namespace Promethium
         {
             return new Vector2(v.X + x, v.Y + y);
         }
+
+        public static Vector2 ToEntityPos(this Point p, Entity en)
+        {
+            return p.ToWorldCoordinates(0, 16 - en.height);
+        }
     }
 }

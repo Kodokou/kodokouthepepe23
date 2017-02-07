@@ -59,10 +59,10 @@ namespace Promethium.Projectiles
         {
             Vector2 pos = projectile.Center - Main.screenPosition;
             Texture2D tex = mod.GetTexture("Projectiles/ChronoPrism_1");
-            float rot = projectile.rotation * 2 / 3;
+            float rot = projectile.rotation * -3 / 2;
             sb.Draw(tex, pos, null, light, rot, tex.Size() / 2, 1, SpriteEffects.None, 0);
             tex = mod.GetTexture("Projectiles/ChronoPrism_2");
-            rot = projectile.rotation * 3 / 2;
+            rot = projectile.rotation * 2;
             sb.Draw(tex, pos, null, light, rot, tex.Size() / 2, 1, SpriteEffects.None, 0);
             return true;
         }

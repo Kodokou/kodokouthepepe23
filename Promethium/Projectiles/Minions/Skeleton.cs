@@ -22,13 +22,14 @@ namespace Promethium.Projectiles.Minions
             projectile.netImportant = true;
             projectile.timeLeft = 7200;
             projectile.minion = true;
+            projectile.ignoreWater = true;
             Main.projPet[projectile.type] = true;
             Main.projFrames[projectile.type] = 4;
             necroDrain = 0.00001F;
 
             aiArr = new BaseAI[3];
-            aiArr[0] = new LeapAttackAI() { startDist = 40 };
-            aiArr[1] = new GhostFollowAI() { startDist = 1600 };
+            aiArr[0] = new LeapAttackAI() { startDist = 40, maxSpeed = 20 };
+            aiArr[1] = new FlyFollowAI() { startDist = 1600, maxSpeed = 10 };
             aiArr[2] = new WalkingAI() { maxJump = 16 };
         }
 
@@ -72,14 +73,14 @@ namespace Promethium.Projectiles.Minions
                 return;
             }
 
-            AIUser aiu = new AI.Entities.AI_Projectile(projectile);
-            byte aiType = aiu.GetAI();
+            AIUser aiu = new AI.Entities.WrapProjectile(projectile);
+            int aiType = aiu.GetAI();
             bool result = aiArr[aiType].AI(aiu);
             if (aiType == 2)
             {
                 projectile.spriteDirection = projectile.direction;
                 projectile.alpha = 0;
-                if (projectile.velocity.Y == 0 && Math.Abs(projectile.velocity.X) >= 0.5f)
+                if (projectile.velocity.Y == 0 && Math.Abs(projectile.velocity.X) >= 0.5F)
                 {
                     projectile.frameCounter += (int)Math.Abs(projectile.velocity.X);
                     if (++projectile.frameCounter > 10)

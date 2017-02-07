@@ -1,23 +1,23 @@
-﻿using System;
-using Terraria;
+﻿using Terraria;
+using System;
 
 namespace Promethium.AI.Entities
 {
-    class AI_Projectile : AIUser
+    class WrapNPC : AIUser
     {
-        protected readonly new Projectile entity;
+        protected readonly new NPC entity;
 
-        public AI_Projectile(Projectile obj) : base(obj)
+        public WrapNPC(NPC obj) : base(obj)
         {
             entity = obj;
             data = BitConverter.GetBytes(obj.ai[0]);
         }
 
-        public override Player GetPlayer() { return Main.player[entity.owner]; }
+        public override Player GetPlayer() { return Main.player[entity.FindClosestPlayer()]; }
 
         public override bool IsFriendly() { return entity.friendly; }
 
-        public override void SetTileCollide(bool value) { entity.tileCollide = value; }
+        public override void SetTileCollide(bool value) { entity.noTileCollide = !value; }
 
         public override void CollisionStepUp()
         {
@@ -34,7 +34,7 @@ namespace Promethium.AI.Entities
 
         public override void SetRotation(float value) { entity.rotation = value; }
 
-        public override int GetMinionPos() { return entity.minionPos; }
+        public override int GetMinionPos() { return -1; }
 
         public override void SaveData() { entity.ai[0] = BitConverter.ToSingle(data, 0); }
     }

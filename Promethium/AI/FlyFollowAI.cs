@@ -4,9 +4,10 @@ using Microsoft.Xna.Framework;
 
 namespace Promethium.AI
 {
-    class GhostFollowAI : BaseAI
+    class FlyFollowAI : BaseAI
     {
-        public int startDist = int.MaxValue;
+        public int startDist = int.MaxValue, maxSpeed = 0;
+        public float accel = 0.2F;
 
         public override bool CanStart(AIUser aiu)
         {
@@ -18,8 +19,7 @@ namespace Promethium.AI
         {
             Player plr = aiu.GetPlayer();
             Vector2 deltaPlr = aiu.entity.Center - plr.Center;
-            aiu.SetTileCollide(false);
-            float speedMult = 10, velSum = Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y);
+            float speedMult = maxSpeed, velSum = Math.Abs(plr.velocity.X) + Math.Abs(plr.velocity.Y);
             if (speedMult < velSum) speedMult = velSum;
             float plrDist = deltaPlr.Length();
             Vector2 vel = aiu.entity.velocity;
@@ -29,23 +29,23 @@ namespace Promethium.AI
                 deltaPlr *= speedMult;
                 if (vel.X < deltaPlr.X)
                 {
-                    vel.X += 0.2F;
-                    if (vel.X < 0) vel.X += 0.3F;
+                    vel.X += accel;
+                    if (vel.X < 0) vel.X += accel * 3 / 2;
                 }
-                if (vel.X > deltaPlr.X)
+                else if (vel.X > deltaPlr.X)
                 {
-                    vel.X -= 0.2F;
-                    if (vel.X > 0) vel.X -= 0.3f;
+                    vel.X -= accel;
+                    if (vel.X > 0) vel.X -= accel * 3 / 2;
                 }
                 if (vel.Y < deltaPlr.Y)
                 {
-                    vel.Y += 0.2F;
-                    if (vel.Y < 0) vel.Y += 0.3F;
+                    vel.Y += accel;
+                    if (vel.Y < 0) vel.Y += accel * 3 / 2;
                 }
-                if (vel.Y > deltaPlr.Y)
+                else if (vel.Y > deltaPlr.Y)
                 {
-                    vel.Y -= 0.2F;
-                    if (vel.Y > 0) vel.Y -= 0.3F;
+                    vel.Y -= accel;
+                    if (vel.Y > 0) vel.Y -= accel * 3 / 2;
                 }
             }
             aiu.SetRotation(vel.X / 10);
