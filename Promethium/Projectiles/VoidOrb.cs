@@ -9,13 +9,13 @@ namespace Promethium.Projectiles
         public override void SetDefaults()
         {
             projectile.name = "Void Orb";
-            projectile.width = 24;
-            projectile.height = 24;
+            projectile.width = 30;
+            projectile.height = 30;
             projectile.friendly = true;
             projectile.timeLeft = 96;
-            projectile.ignoreWater = true;
             projectile.minion = true;
             projectile.extraUpdates = 1;
+            Main.projFrames[projectile.type] = 3;
         }
 
         public override bool Autoload(ref string name, ref string texture)
@@ -33,13 +33,14 @@ namespace Promethium.Projectiles
                 projectile.netUpdate = true;
             }
             else if (projectile.DistanceSQ(new Vector2(projectile.ai[0], projectile.ai[1])) < 6) projectile.Kill();
+            projectile.rotation += 0.1F * System.Math.Sign(projectile.velocity.X);
         }
 
         public override void Kill(int timeLeft)
         {
             if (Main.myPlayer == projectile.owner)
             {
-                int vortexId = mod.ProjectileType("Vortex");
+                int vortexId = mod.ProjectileType<Vortex>();
                 for (int i = 0; i < Main.maxNPCs; ++i)
                 {
                     Projectile p = Main.projectile[i];

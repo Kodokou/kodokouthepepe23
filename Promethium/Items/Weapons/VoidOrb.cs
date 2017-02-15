@@ -1,5 +1,6 @@
 ﻿using Terraria.ModLoader;
 using Terraria;
+using Terraria.DataStructures;
 
 namespace Promethium.Items.Weapons
 {
@@ -9,13 +10,13 @@ namespace Promethium.Items.Weapons
 		{
 			item.damage = 22;
 			item.name = "Void Orb";
-            item.width = 32;
-            item.height = 32;
+            item.width = 30;
+            item.height = 30;
 			item.toolTip = "Spawns a vortex that draws in nearby enemies";
 			item.shoot = mod.ProjectileType<Projectiles.VoidOrb>();
 			item.shootSpeed = 5;
 			item.summon = true;
-			item.useStyle = 1;
+			item.useStyle = 2;
 			item.useTime = 24;
 			item.useAnimation = 24;
             item.mana = 50;
@@ -27,6 +28,11 @@ namespace Promethium.Items.Weapons
             item.rare = 6;
             item.UseSound = Terraria.ID.SoundID.Item1;
         }
-	}
+
+        public override DrawAnimation GetAnimation()
+        {
+            return new DrawAnimationVertical(10, 3);
+        }
+    }
 }
 
