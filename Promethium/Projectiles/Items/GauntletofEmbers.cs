@@ -1,25 +1,25 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
 
 namespace Promethium.Projectiles.Items
 {
     class GauntletofEmbers : AnimItem
     {
+        public override string Texture => "Promethium/Items/Weapons/GauntletofEmbers";
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Gauntlet of Embers");
+        }
+
         public override void SetDefaults(ref int frames, ref int animSpeed)
         {
-            projectile.name = "Gauntlet of Embers";
             frames = 1;
             animSpeed = 666;
             projectile.width = 34;
             projectile.height = 34;
             drawHeldProjInFrontOfHeldItemAndArms = true;
-        }
-
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "Promethium/Items/Weapons/GauntletofEmbers";
-            return true;
         }
 
         public override void CustomAI()
@@ -52,7 +52,7 @@ namespace Promethium.Projectiles.Items
             string proj = "Fireball";
             if (projectile.ai[0] >= 80) proj += "Large";
             else if (projectile.ai[0] >= 40) proj += "Med";
-            else proj += "Small"; 
+            else proj += "Small";
             ShootProjectile(mod.ProjectileType(proj), 12, SoundID.Item20);
         }
     }

@@ -4,13 +4,17 @@ namespace Promethium.Items.Weapons
 {
     class ChronoTag : ModItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Chrono Tag");
+            Tooltip.SetDefault("Marks your current location in time");
+        }
+
         public override void SetDefaults()
         {
             item.damage = 15;
-            item.name = "Chrono Tag";
             item.width = 34;
             item.height = 34;
-            item.toolTip = "Saves your current state in time";
             item.shoot = mod.ProjectileType<Projectiles.ChronoPrism>();
             item.shootSpeed = 1;
             item.summon = true;

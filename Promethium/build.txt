@@ -1,8 +1,9 @@
 author = The CCM DevTeam
-version = 0.4
+version = 0.4.1
 displayName = Contra Corruptam Mundi
-includePDB = true
 hideCode = true
 hideResources = true
 includeSource = false
-languageVersion = 4
+buildIgnore = *.csproj, *.user, obj\*, bin\*, .vs\*
+includePDB = true
+languageVersion = 6

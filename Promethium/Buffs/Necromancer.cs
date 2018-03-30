@@ -1,5 +1,4 @@
-﻿using System;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 namespace Promethium.Buffs
@@ -10,8 +9,8 @@ namespace Promethium.Buffs
 
         public override void SetDefaults()
         {
-            Main.buffName[Type] = "Soul Prison";
-            Main.buffTip[Type] = "";
+            DisplayName.SetDefault("Soul Prison");
+            Description.SetDefault("");
             Main.buffNoTimeDisplay[Type] = true;
             Main.buffNoSave[Type] = true;
         }

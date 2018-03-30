@@ -1,16 +1,20 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace Promethium.Items.Weapons
 {
     public class Yumi : ModItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Yumi");
+            Tooltip.SetDefault("True power comes through concentration");
+        }
+
         public override void SetDefaults()
         {
-            item.name = "Yumi";
             item.width = 20;
             item.height = 58;
             item.damage = 50;
@@ -25,7 +29,6 @@ namespace Promethium.Items.Weapons
             item.rare = 5;
             item.noMelee = true;
             item.noUseGraphic = true;
-            item.toolTip = "With enough concentration gets even stronger";
             item.shoot = mod.ProjectileType<Projectiles.Items.Yumi>();
             item.shootSpeed = 7;
         }

@@ -1,15 +1,19 @@
-﻿using Terraria.ModLoader;
-using Terraria;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ModLoader;
 
 namespace Promethium.Projectiles
 {
     class ChronoPrism : ModProjectile
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Chrono Prism");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Chrono Prism";
             projectile.alpha = 255;
             projectile.width = 30;
             projectile.height = 30;

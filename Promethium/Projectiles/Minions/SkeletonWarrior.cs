@@ -1,7 +1,7 @@
-﻿using Terraria.ID;
-using Terraria;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Terraria;
+using Terraria.ID;
 
 namespace Promethium.Projectiles.Minions
 {
@@ -10,10 +10,14 @@ namespace Promethium.Projectiles.Minions
         private float oldRot = 0;
         public Texture2D item = null;
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Skeleton Warrior");
+        }
+
         public override void SetDefaults()
         {
             base.SetDefaults();
-            projectile.name = "Skeleton Warrior";
             projectile.penetrate = -1;
             item = Main.itemTexture[ItemID.BoneSword];
             necroDrain = 0.00025F;

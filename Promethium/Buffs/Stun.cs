@@ -1,5 +1,5 @@
-﻿using Terraria.ModLoader;
-using Terraria;
+﻿using Terraria;
+using Terraria.ModLoader;
 
 namespace Promethium.Buffs
 {
@@ -7,8 +7,8 @@ namespace Promethium.Buffs
     {
         public override void SetDefaults()
         {
-            Main.buffName[Type] = "Stunned";
-            Main.buffTip[Type] = "You cannot move!";
+            DisplayName.SetDefault("Stunned");
+            Description.SetDefault("You cannot move!");
             Main.debuff[Type] = true;
         }
 

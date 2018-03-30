@@ -1,7 +1,8 @@
-﻿using Terraria;
-using Terraria.ID;
+﻿using Microsoft.Xna.Framework;
 using System;
-using Microsoft.Xna.Framework;
+using Terraria;
+using Terraria.ID;
+using Terraria.Localization;
 
 namespace Promethium
 {
@@ -10,7 +11,7 @@ namespace Promethium
         public static void NetStrikeNPC(this NPC npc, int damage, float knockBack, int hitDirection, bool crit = false)
         {
             npc.StrikeNPC(damage, knockBack, hitDirection, crit, false, false);
-            if (Main.netMode != 0) NetMessage.SendData(28, -1, -1, "", npc.whoAmI, damage, knockBack, hitDirection, crit ? 1 : 0);
+            if (Main.netMode != 0) NetMessage.SendData(28, -1, -1, NetworkText.Empty, npc.whoAmI, damage, knockBack, hitDirection, crit ? 1 : 0);
         }
 
         public static bool IsSolid(this Tile t)

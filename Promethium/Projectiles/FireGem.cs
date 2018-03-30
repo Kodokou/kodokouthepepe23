@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using Terraria;
-using Terraria.ModLoader;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
 
 namespace Promethium.Projectiles
 {
@@ -10,9 +10,13 @@ namespace Promethium.Projectiles
     {
         private const int MAX_DIST_SQ = 16 * 7 * 16 * 7;
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Fire Gem");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Fire Gem";
             projectile.scale = 0.9F;
             projectile.width = 24;
             projectile.height = 24;

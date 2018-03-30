@@ -1,8 +1,7 @@
-﻿using Terraria.ModLoader;
-using Terraria.ID;
+﻿using System.Collections.Generic;
 using Terraria;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace Promethium.Items.Weapons
 {
@@ -12,9 +11,14 @@ namespace Promethium.Items.Weapons
         public int necroCost;
         public string summon;
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Necronomicon");
+            Tooltip.SetDefault("'The shadows beckon'\nAllows collection of slain souls");
+        }
+
         public override void SetDefaults()
         {
-            item.name = "Necronomicon";
             item.summon = true;
             item.noMelee = true;
             item.damage = 50;
@@ -27,8 +31,6 @@ namespace Promethium.Items.Weapons
             item.useAnimation = 20;
             item.useTime = 20;
             item.knockBack = 6;
-            item.toolTip = "'The shadows beckon'";
-            item.toolTip2 = "Allows collection of slain souls";
             item.value = Item.buyPrice(0, 15, 0, 0);
             summon = "";
             necroCost = 5;
@@ -65,7 +67,7 @@ namespace Promethium.Items.Weapons
                     item.mana = 10;
                 }
                 CombatText.NewText(new Rectangle((int)plr.position.X, (int)plr.position.Y, plr.width, plr.height), Color.LightGray, "Minion: Skeleton " + summon, false, false);
-                */            
+                */
                 rightTime = 30;
             }
             return false;

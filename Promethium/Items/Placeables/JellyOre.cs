@@ -4,9 +4,13 @@ namespace Promethium.Items.Placeables
 {
     public class JellyOre : ModItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Jelly Ore");
+        }
+
         public override void SetDefaults()
         {
-            item.name = "Jelly Ore";
             item.width = 12;
             item.height = 12;
             item.maxStack = 999;

@@ -1,15 +1,18 @@
-﻿using System;
-using Terraria.ModLoader;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
 
 namespace Promethium.Projectiles
 {
     class QuantumBeam : ModProjectile
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Quantum Beam");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Quantum Beam";
             projectile.width = 22;
             projectile.height = 42;
             projectile.aiStyle = 28;

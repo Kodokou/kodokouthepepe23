@@ -1,15 +1,18 @@
-﻿using System;
-using Terraria;
+﻿using Terraria.ID;
 using Terraria.ModLoader;
-using Terraria.ID;
 
 namespace Promethium.Items.Weapons
 {
     public class HeavyFlail : ModItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Heavy Flail");
+            Tooltip.SetDefault("Hits harder the faster you swing it around");
+        }
+
         public override void SetDefaults()
         {
-            item.name = "Heavy Flail";
             item.noMelee = true;
             item.useStyle = 5;
             item.useAnimation = 45;
@@ -26,7 +29,6 @@ namespace Promethium.Items.Weapons
             item.value = 27000;
             item.melee = true;
             item.channel = true;
-            item.toolTip = "Hits harder the faster you swing it around!";
         }
     }
 }

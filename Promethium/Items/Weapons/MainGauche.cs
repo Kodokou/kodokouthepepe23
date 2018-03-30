@@ -8,13 +8,17 @@ namespace Promethium.Items.Weapons
     {
         private int coolDown = 0;
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Main Gauche");
+            Tooltip.SetDefault("'En garde!'");
+        }
+
         public override void SetDefaults()
         {
             item.damage = 11;
-            item.name = "Main Gauche";
             item.width = 38;
             item.height = 38;
-            item.toolTip = "'En garde!'";
             item.melee = true;
             item.useStyle = 3;
             item.useTime = 12;

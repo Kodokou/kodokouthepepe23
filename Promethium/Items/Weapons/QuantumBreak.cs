@@ -1,7 +1,7 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
 
 namespace Promethium.Items.Weapons
 {
@@ -11,10 +11,14 @@ namespace Promethium.Items.Weapons
         private int resetTimer = 0;
         private float startY = 0;
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Quantum Break");
+            Tooltip.SetDefault("Responds to certain location markings");
+        }
+
         public override void SetDefaults()
         {
-            item.name = "Quantum Break";
-            item.toolTip = "Allows to break the passage of time itself";
             item.damage = 115;
             item.width = 60;
             item.height = 60;

@@ -1,10 +1,9 @@
-﻿using System;
-using Terraria;
-using Terraria.ModLoader;
-using Terraria.ID;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System.IO;
+using System;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace Promethium.Projectiles
 {
@@ -13,21 +12,21 @@ namespace Promethium.Projectiles
         int item = 0, iW = 16, iH = 16;
         int length = 40;
 
+        public override string Texture => "Promethium/Items/Weapons/BladeWorks";
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Blade Projection");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Blade Projection";
-            projectile.width = 8; 
+            projectile.width = 8;
             projectile.height = 8;
             projectile.tileCollide = false;
             projectile.timeLeft = 210;
             projectile.friendly = true;
             projectile.magic = true;
-        }
-
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "Promethium/Items/Weapons/BladeWorks";
-            return true;
         }
 
         public override void AI()

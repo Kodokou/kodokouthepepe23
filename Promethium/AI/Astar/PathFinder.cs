@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System;
 using System.Collections.Generic;
 using Terraria;
-using Microsoft.Xna.Framework;
 
 namespace Promethium.AI.Astar
 {
@@ -44,22 +44,21 @@ namespace Promethium.AI.Astar
         public int SearchLimit = 4000;
         private byte mOpenNodeValue = 1;
         private byte mCloseNodeValue = 2;
-        
+
         private Location mLocation;
         private Point mNewLocation;
-        private Node mNode;
         private int mCloseNodeCounter = 0;
         private bool mFound = false;
         private sbyte[,] mDirection = new sbyte[8, 2] { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 }, { 1, -1 }, { 1, 1 }, { -1, 1 }, { -1, -1 } };
         private Point mEndLocation;
-        
+
         public PathFinder()
         {
             nodes = new Dictionary<Point, List<Node>>();
             touchedLocations = new Stack<Point>();
             mOpen = new PriorityQueue<Location>(new ComparePFNodeMatrix(nodes), 16);
         }
-        
+
         public bool Stopped
         {
             get { return mStopped; }
@@ -75,7 +74,7 @@ namespace Promethium.AI.Astar
                 else mDirection = new sbyte[4, 2] { { 0, -1 }, { 1, 0 }, { 0, 1 }, { -1, 0 } };
             }
         }
-        
+
         public void FindPathStop()
         {
             mStop = true;
@@ -112,12 +111,14 @@ namespace Promethium.AI.Astar
                 mLocation.Z = 0;
                 mEndLocation = end;
 
-                Node firstNode = new Node();
-                firstNode.G = 0;
-                firstNode.F = HEstimate;
-                firstNode.PPos = start;
-                firstNode.PZ = 0;
-                firstNode.Status = mOpenNodeValue;
+                Node firstNode = new Node
+                {
+                    G = 0,
+                    F = HEstimate,
+                    PPos = start,
+                    PZ = 0,
+                    Status = mOpenNodeValue
+                };
 
                 if (Main.tile[start.X, start.Y + 1].IsSolid()) firstNode.Jump = 0;
                 else firstNode.Jump = currJump;
@@ -130,7 +131,7 @@ namespace Promethium.AI.Astar
                 while (mOpen.Count > 0 && !mStop)
                 {
                     mLocation = mOpen.Pop();
-                    
+
                     if (GetNode(mLocation.Pos)[mLocation.Z].Status == mCloseNodeValue) continue;
 
                     int dx = mEndLocation.X - mLocation.Pos.X;
@@ -149,7 +150,7 @@ namespace Promethium.AI.Astar
                         mStopped = true;
                         return null;
                     }
-                    
+
                     for (int i = mDiagonals ? 7 : 3; i >= 0; --i)
                     {
                         mNewLocation = new Point(mLocation.Pos.X + mDirection[i, 0], mLocation.Pos.Y + mDirection[i, 1]);
@@ -188,7 +189,7 @@ namespace Promethium.AI.Astar
                         if (newJump >= jumpHeight * 2 + 6 && mNewLocation.X != mLocation.Pos.X && (newJump - (jumpHeight * 2 + 6)) % 8 != 3) continue;
 
                         float newG = nodes[mLocation.Pos][mLocation.Z].G + 1 + 3 * newJump / (float)jumpHeight;
-                        
+
                         if (GetNode(mNewLocation).Count > 0)
                         {
                             int lowestJump = short.MaxValue;
@@ -218,16 +219,18 @@ namespace Promethium.AI.Astar
                         //     float Orthogonal = Math.Abs(dxy.X - dxy.Y);
                         //     float Diagonal = Math.Abs(((dxy.X + dxy.Y) - Orthogonal) / 2);
                         //     mHEstimate * (Diagonal + Orthogonal + dxy.X + dxy.Y);
-                        
+
                         float newH = HEstimate * (Math.Abs(dist.X) + Math.Abs(dist.Y));
 
-                        Node newNode = new Node();
-                        newNode.Jump = newJump;
-                        newNode.PPos = mLocation.Pos;
-                        newNode.PZ = mLocation.Z;
-                        newNode.G = newG;
-                        newNode.F = newG + newH;
-                        newNode.Status = mOpenNodeValue;
+                        Node newNode = new Node
+                        {
+                            Jump = newJump,
+                            PPos = mLocation.Pos,
+                            PZ = mLocation.Z,
+                            G = newG,
+                            F = newG + newH,
+                            Status = mOpenNodeValue
+                        };
 
                         if (Debug) Main.dust[Dust.NewDust(mLocation.Pos.ToWorldCoordinates(), 1, 1, Terraria.ID.DustID.Fire)].noGravity = true;
 
@@ -259,8 +262,8 @@ namespace Promethium.AI.Astar
                             || (Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsSolid() && Main.tile[fNode.Pos.X, fNode.Pos.Y + 1].IsTopSolid())
                             || (Main.tile[fNode.Pos.X, fNode.Pos.Y + 1].IsSolid() && Main.tile[fPrevNode.X, fPrevNode.Y + 1].IsTopSolid())
                             || fNodeTmp.Jump == 3
-                            || (fNextNodeTmp.Jump != 0 && fNodeTmp.Jump == 0)                                                                                                       
-                            || (fNodeTmp.Jump == 0 && fPrevNodeTmp.Jump != 0)                                                                                        
+                            || (fNextNodeTmp.Jump != 0 && fNodeTmp.Jump == 0)
+                            || (fNodeTmp.Jump == 0 && fPrevNodeTmp.Jump != 0)
                             || (fNode.Pos.Y > ret.Last.Value.Pos.Y && fNode.Pos.Y > fNodeTmp.PPos.Y)
                             || (fNode.Pos.Y < ret.Last.Value.Pos.Y && fNode.Pos.Y < fNodeTmp.PPos.Y)
                             || ((CollisionAt(new Point(fNode.Pos.X - 1, fNode.Pos.Y), en) || CollisionAt(new Point(fNode.Pos.X + 1, fNode.Pos.Y), en))
@@ -281,7 +284,7 @@ namespace Promethium.AI.Astar
                 return null;
             }
         }
-        
+
         internal class ComparePFNodeMatrix : IComparer<Location>
         {
             Dictionary<Point, List<Node>> mMatrix;

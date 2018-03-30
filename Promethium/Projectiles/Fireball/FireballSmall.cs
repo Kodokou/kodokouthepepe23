@@ -6,9 +6,13 @@ namespace Promethium.Projectiles.Fireball
 {
     class FireballSmall : ModProjectile
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Fireball");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Fireball";
             projectile.width = 10;
             projectile.height = 10;
             projectile.timeLeft = 128;

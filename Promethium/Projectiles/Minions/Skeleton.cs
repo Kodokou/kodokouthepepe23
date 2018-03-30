@@ -1,9 +1,9 @@
-﻿using Terraria.ModLoader;
-using Terraria.ID;
-using Terraria;
-using Microsoft.Xna.Framework;
-using System;
+﻿using Microsoft.Xna.Framework;
 using Promethium.AI;
+using System;
+using Terraria;
+using Terraria.ID;
+using Terraria.ModLoader;
 
 namespace Promethium.Projectiles.Minions
 {
@@ -14,9 +14,15 @@ namespace Promethium.Projectiles.Minions
 
         public float necroDrain;
 
+        public override string Texture => "Promethium/Projectiles/Minions/Skeleton";
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Skeleton Minion");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Skeleton";
             projectile.width = 22;
             projectile.height = 26;
             projectile.netImportant = true;
@@ -31,12 +37,6 @@ namespace Promethium.Projectiles.Minions
             aiArr[0] = new LeapAttackAI() { startDist = 40, maxSpeed = 20 };
             aiArr[1] = new FlyFollowAI() { startDist = 1600, maxSpeed = 10 };
             aiArr[2] = new WalkingAI() { maxJump = 16 };
-        }
-
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "Promethium/Projectiles/Minions/Skeleton";
-            return true;
         }
 
         public virtual bool Attack(NPC target, float dist)

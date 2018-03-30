@@ -1,16 +1,20 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using System;
 using Terraria;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Promethium.Projectiles
 {
     public class HeavyFlail : ModProjectile
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Heavy Flail");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Heavy Flail";
             projectile.width = 40;
             projectile.height = 40;
             projectile.aiStyle = 15;

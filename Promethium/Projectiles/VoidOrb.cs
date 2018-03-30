@@ -1,14 +1,20 @@
-﻿using Terraria.ModLoader;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
 
 namespace Promethium.Projectiles
 {
     class VoidOrb : ModProjectile
     {
+        public override string Texture => "Promethium/Items/Weapons/VoidOrb";
+
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Void Orb");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Void Orb";
             projectile.width = 30;
             projectile.height = 30;
             projectile.friendly = true;
@@ -16,12 +22,6 @@ namespace Promethium.Projectiles
             projectile.minion = true;
             projectile.extraUpdates = 1;
             Main.projFrames[projectile.type] = 3;
-        }
-
-        public override bool Autoload(ref string name, ref string texture)
-        {
-            texture = "Promethium/Items/Weapons/VoidOrb";
-            return true;
         }
 
         public override void AI()

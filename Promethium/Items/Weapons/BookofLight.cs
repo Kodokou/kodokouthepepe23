@@ -1,17 +1,22 @@
-﻿using Terraria;
+﻿using Microsoft.Xna.Framework;
+using System;
+using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using System;
 
 namespace Promethium.Items.Weapons
 {
     class BookofLight : ModItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Book of Light");
+            Tooltip.SetDefault("Shoots a stunning burst of photons");
+        }
+
         public override void SetDefaults()
         {
             item.damage = 14;
-            item.name = "Book of Light";
             item.width = 28;
             item.height = 30;
             item.useStyle = 5;
@@ -23,7 +28,6 @@ namespace Promethium.Items.Weapons
             item.rare = 2;
             item.noMelee = true;
             item.crit = 0;
-            item.toolTip = "Shoots a stunning burst of photons";
             item.UseSound = SoundID.Item8;
         }
 

@@ -1,16 +1,19 @@
-﻿using System;
-using Terraria;
-using Terraria.ModLoader;
+﻿using Terraria;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
 
 namespace Promethium.Items.Weapons
 {
-    public class ManaBuckler : ModItem 
+    public class ManaBuckler : ModItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Mana Buckler");
+            Tooltip.SetDefault("Lets your mana become your shield");
+        }
+
         public override void SetDefaults()
         {
-            item.name = "Mana Buckler";
             item.width = 22;
             item.height = 34;
             item.useStyle = 5;
@@ -19,7 +22,6 @@ namespace Promethium.Items.Weapons
             item.value = Item.buyPrice(0, 2);
             item.mana = 10;
             item.rare = 3;
-            item.toolTip = "Makes your mana become your shield";
             item.UseSound = SoundID.Item8;
         }
 

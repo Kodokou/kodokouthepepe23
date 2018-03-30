@@ -1,18 +1,22 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using Microsoft.Xna.Framework;
-using System.Collections.Generic;
 
 namespace Promethium.Items.Weapons
 {
     public class BladeWorks : ModItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Blade Works");
+            Tooltip.SetDefault("'I am the Bone of my Sword...'");
+        }
+
         public override void SetDefaults()
         {
             item.damage = 1000;
-            item.name = "Blade Works";
             item.width = 30;
             item.height = 34;
             item.useStyle = 5;
@@ -23,7 +27,6 @@ namespace Promethium.Items.Weapons
             item.mana = 9;
             item.rare = 3;
             item.noMelee = true;
-            item.toolTip = "'I am the Bone of my Sword...'";
             item.UseSound = SoundID.Item8;
         }
 

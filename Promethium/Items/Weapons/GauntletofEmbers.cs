@@ -1,14 +1,18 @@
 ﻿using Terraria;
-using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace Promethium.Items.Weapons
 {
     class GauntletofEmbers : ModItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Gauntlet of Embers");
+            Tooltip.SetDefault("'My hand feels like it is melting!'");
+        }
+
         public override void SetDefaults()
         {
-            item.name = "Gauntlet of Embers";
             item.damage = 20;
             item.width = 34;
             item.height = 34;
@@ -22,7 +26,6 @@ namespace Promethium.Items.Weapons
             item.rare = 5;
             item.noMelee = true;
             item.noUseGraphic = true;
-            item.toolTip = "'My hands feel like they are melting!'";
             item.shoot = mod.ProjectileType<Projectiles.Items.GauntletofEmbers>();
             item.shootSpeed = 14;
         }

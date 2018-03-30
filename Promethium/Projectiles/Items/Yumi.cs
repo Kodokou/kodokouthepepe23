@@ -1,15 +1,18 @@
-﻿using System;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
-using Microsoft.Xna.Framework;
 
 namespace Promethium.Projectiles.Items
 {
     public class Yumi : AnimItem
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Yumi");
+        }
+
         public override void SetDefaults(ref int frames, ref int animSpeed)
         {
-            projectile.name = "Yumi";
             frames = 6;
             animSpeed = 15;
             projectile.width = 30;

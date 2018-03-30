@@ -1,14 +1,18 @@
-﻿using Terraria.ModLoader;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Microsoft.Xna.Framework;
+using Terraria.ModLoader;
 
 namespace Promethium.Projectiles
 {
     class LightningStrike : ModProjectile
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Lightning Strike");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Lightning Strike";
             projectile.width = 8;
             projectile.height = 8;
             projectile.friendly = true;

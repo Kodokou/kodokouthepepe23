@@ -1,5 +1,4 @@
-﻿using System;
-using Terraria;
+﻿using Terraria;
 using Terraria.ModLoader;
 
 namespace Promethium.Buffs
@@ -10,8 +9,8 @@ namespace Promethium.Buffs
 
         public override void SetDefaults()
         {
-            Main.buffName[Type] = "Mana Buckler";
-            Main.buffTip[Type] = "";
+            DisplayName.SetDefault("Mana Buckler");
+            Description.SetDefault("");
             Main.buffNoSave[Type] = true;
         }
 

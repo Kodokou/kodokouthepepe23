@@ -1,16 +1,19 @@
-﻿using Terraria.ID;
+﻿using Microsoft.Xna.Framework;
 using Terraria;
-using Microsoft.Xna.Framework;
-using System;
+using Terraria.ID;
 
 namespace Promethium.Projectiles.Minions
 {
     class SkeletonMage : SkeletonWarrior
     {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Skeleton Mage");
+        }
+
         public override void SetDefaults()
         {
             base.SetDefaults();
-            projectile.name = "Skeleton Mage";
             item = Main.itemTexture[ItemID.RubyStaff];
             necroDrain = 0.001F;
             //attackDist = 300;

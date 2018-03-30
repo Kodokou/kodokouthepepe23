@@ -8,9 +8,13 @@ namespace Promethium.Projectiles
     {
         private const int VACCUM_DIST_SQ = 15000;
 
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Void Vortex");
+        }
+
         public override void SetDefaults()
         {
-            projectile.name = "Void Vortex";
             projectile.alpha = 255;
             projectile.width = 54;
             projectile.height = 54;

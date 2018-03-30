@@ -3,15 +3,19 @@ using Terraria.ModLoader;
 
 namespace Promethium.Items.Weapons
 {
-	public class FireGem : ModItem
-	{
-        public override void SetDefaults ()
+    public class FireGem : ModItem
+    {
+        public override void SetStaticDefaults()
+        {
+            DisplayName.SetDefault("Fire Gems");
+            Tooltip.SetDefault("Magical gems that explode when enemies get close to them");
+        }
+
+        public override void SetDefaults()
         {
             item.damage = 42;
-            item.name = "Fire Gems";
             item.width = 30;
             item.height = 34;
-            item.toolTip = "Magical gems that explode when enemies get close to them";
             item.shoot = mod.ProjectileType<Projectiles.FireGem>();
             item.shootSpeed = 15;
             item.summon = true;
@@ -27,6 +31,6 @@ namespace Promethium.Items.Weapons
             item.rare = 6;
             item.UseSound = Terraria.ID.SoundID.Item1;
         }
-	}
+    }
 }
 
